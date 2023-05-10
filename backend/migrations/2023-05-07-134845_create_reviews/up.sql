@@ -1,0 +1,12 @@
+-- Your SQL goes here
+
+CREATE TABLE reviews (
+  id SERIAL PRIMARY KEY,
+  first_name VARCHAR NOT NULL,
+  last_name VARCHAR NOT NULL,
+  body TEXT NOT NULL,
+  anonymous BOOLEAN NOT NULL DEFAULT FALSE,
+  published BOOLEAN NOT NULL DEFAULT FALSE,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+)
+
