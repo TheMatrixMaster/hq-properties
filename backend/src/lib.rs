@@ -2,6 +2,7 @@
 
 pub mod schema;
 pub mod reviews;
+pub mod listings;
 
 use std::env;
 use dotenvy::dotenv;

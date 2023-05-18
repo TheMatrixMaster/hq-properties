@@ -11,6 +11,7 @@ dotenvy = "0.15.0"
 rocket = { version = "0.5.0-rc.3", "features"=["json"] }
 rocket_contrib = { version = "0.4.10", default-features = false, features = ["json"] }
 rocket_sync_db_pools = { version = "0.1.0-rc.3", features = ["diesel_postgres_pool"] }
+diesel-derive-enum = { version = "2.0.1", features = ["postgres"] }
 
 [dev-dependencies]
 parking_lot = "0.12.1"
