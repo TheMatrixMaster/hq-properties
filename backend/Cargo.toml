@@ -1,8 +1,14 @@
 [package]
+authors = ["thematrixmaster"]
 name = "backend_api"
 version = "0.1.0"
 edition = "2018"
 publish = false
+
+[[bin]]
+doc = false
+name = "backend_api"
+path = "src/main.rs"
 
 [dependencies]
 chrono = { version = "0.4.20", default-features = false, features = ["clock", "std", "serde"] }

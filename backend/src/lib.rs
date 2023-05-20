@@ -3,6 +3,8 @@
 pub mod schema;
 pub mod reviews;
 pub mod listings;
+pub mod posts;
+pub mod videos;
 
 use std::env;
 use dotenvy::dotenv;

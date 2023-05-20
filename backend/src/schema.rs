@@ -38,9 +38,11 @@ diesel::table! {
 diesel::table! {
     posts (id) {
         id -> Int4,
-        img -> Text,
+        img_url -> Text,
         title -> Varchar,
         body -> Text,
+        created_at -> Timestamp,
+        updated_at -> Timestamp,
     }
 }
 
@@ -56,6 +58,16 @@ diesel::table! {
     }
 }
 
+diesel::table! {
+    videos (id) {
+        id -> Int4,
+        video_url -> Text,
+        title -> Varchar,
+        created_at -> Timestamp,
+        updated_at -> Timestamp,
+    }
+}
+
 diesel::joinable!(listing_images -> listings (listing_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
@@ -63,4 +75,5 @@ diesel::allow_tables_to_appear_in_same_query!(
     listings,
     posts,
     reviews,
+    videos,
 );

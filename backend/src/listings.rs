@@ -8,9 +8,9 @@ use crate::schema::{listings, listing_images};
 use crate::schema::listings::dsl::listings as all_listings;
 use crate::schema::listing_images::dsl::listing_images as all_listing_imgs;
 
-use rocket::{get, post, patch, delete, Responder};
+use rocket::{get, delete, Responder};
 use rocket::serde::{json::Json, Serialize, Deserialize};
-use rocket::response::status::{NotFound, BadRequest};
+use rocket::response::status::{NotFound, NoContent, BadRequest};
 
 use super::{DbConn, ApiError};
 
@@ -267,5 +267,13 @@ pub async fn get_all(
     Ok(Json(data))
 }
 
-
+#[delete("/<id>")]
+pub async fn destroy(conn: DbConn, id: i32) -> Result<NoContent, NotFound<Json<ApiError>>> {
+    Listing::delete_with_id(id, &conn) 
+        .await
+        .map(|_| NoContent)
+        .map_err(|e| {
+            NotFound(Json(ApiError { details: e.to_string() }))
+        })
+}
 
