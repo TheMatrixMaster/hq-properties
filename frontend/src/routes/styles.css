@@ -1,0 +1,338 @@
+@import '@fontsource/karla';
+
+:root {
+	--font-body: 'Karla';
+	--font-mono: 'Karla', monospace;
+	--color-black: #000000;
+	--color-white: #ffffff;
+	--color-bg-0: #232020;
+	--color-bg-1: #232020b2;
+	--color-bg-2: #333333;
+	--color-theme-1: #2f80ed;
+	--color-theme-2: #fb000b;
+	--color-text: rgba(255, 255, 255, 1);
+	--header-height: 7rem;
+	--header-mini-height: 4rem;
+	--carousel-num-items: 2;
+	--section-height: calc(100vh - var(--header-mini-height));
+
+	@media (aspect-ratio > 16/9) {
+		--carousel-num-items: 3;
+	}
+	@media (orientation: portrait) {
+		--carousel-num-items: 1;
+	}
+}
+
+/* overall */
+html {
+	overflow-y: scroll;
+	box-sizing: border-box;
+	-ms-text-size-adjust: 100%;
+	-webkit-text-size-adjust: 100%;
+	font: 2.1vmin var(--font-body);
+	background-color: var(--color-bg-light);
+	scroll-behavior: smooth;
+	@media (orientation: portrait) {
+		font: 1.4vmax var(--font-body);
+	}
+}
+
+body {
+	margin: 0;
+	min-height: 100vh;
+	background-color: var(--color-bg-0);
+
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	color: var(--color-text);
+	font-weight: normal;
+	word-wrap: break-word;
+	font-kerning: normal;
+	-moz-font-feature-settings: 'kern', 'liga', 'clig', 'calt';
+	-webkit-font-feature-settings: 'kern', 'liga', 'clig', 'calt';
+	font-feature-settings: 'kern', 'liga', 'clig', 'calt';
+}
+
+/* global class styles */
+.use-bg-image {
+	background-size: cover;
+	background-position-y: 40%;
+	background-attachment: fixed;
+	background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.45)),
+		url($lib/images/bg.jpg);
+
+	@media (orientation: portrait) {
+		background-position-x: 40%;
+	}
+}
+
+/* Logo styling */
+.logo {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	text-transform: uppercase;
+
+	color: unset;
+	margin-bottom: unset;
+	text-decoration: unset;
+}
+
+.logo h1 {
+	font-weight: bolder;
+	font-size: 2.3rem;
+	margin: 0;
+}
+.logo h3 {
+	font-size: 1.3rem;
+	margin: 0.2rem 0 0 0;
+}
+
+/* Buy / Sell page styling */
+section.buy-sell {
+	gap: 3rem;
+	row-gap: 0.5rem;
+	align-items: start;
+	background: var(--color-bg-1);
+	grid-template-rows: fit-content(100%) auto;
+
+	@media (orientation: landscape) {
+		padding-top: 0.5rem;
+		padding-bottom: 0.5rem;
+	}
+	@media (orientation: portrait) {
+		gap: unset;
+	}
+
+	& > .left-col {
+		display: flex;
+		grid-column: 1/6;
+		flex-direction: column;
+		& > img {
+			max-height: 18rem;
+			width: auto;
+			object-fit: cover;
+		}
+	}
+	& > .right-col {
+		grid-column: 6/13;
+	}
+}
+@media (orientation: portrait), (orientation: landscape) and (aspect-ratio < 1.35) {
+	section.buy-sell > .left-col,
+	section.buy-sell > .right-col {
+		grid-column: 1/13;
+	}
+	section.buy-sell > .left-col > img {
+		height: auto;
+		max-width: unset;
+		max-height: 20rem;
+	}
+}
+
+/* tag styles */
+* {
+	box-sizing: inherit;
+}
+*:before {
+	box-sizing: inherit;
+}
+*:after {
+	box-sizing: inherit;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	padding: 0;
+	color: inherit;
+	text-rendering: optimizeLegibility;
+}
+
+p {
+	font-weight: 400;
+	font-size: 1.2rem;
+	line-height: 1.5;
+	margin-bottom: 1.45rem;
+}
+
+h1 {
+	font-size: 2rem;
+	font-weight: 900;
+	line-height: 1.1;
+	margin: 0;
+}
+
+h2 {
+	font-size: 1.5rem;
+	font-weight: 800;
+	margin-top: 0;
+}
+
+h3 {
+	font-size: 1rem;
+	font-weight: 600;
+	margin-top: 0;
+}
+
+a {
+	font-size: 1.3rem;
+	color: var(--color-text);
+	text-decoration: underline;
+	margin-bottom: 0.5rem;
+}
+
+a:hover {
+	color: var(--color-theme-1);
+}
+
+section {
+	display: grid;
+	padding: 0 3rem;
+	min-height: var(--section-height);
+	grid-template-columns: repeat(12, 1fr);
+	scroll-margin-top: var(--header-mini-height);
+
+	@media (orientation: portrait) and (aspect-ratio < 9/16) {
+		min-height: unset;
+		padding: 2rem 3rem;
+	}
+	@media (orientation: portrait) and (aspect-ratio >= 9/16) {
+		min-height: unset;
+		padding: 2rem 5rem;
+	}
+}
+
+.container-center {
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+}
+
+form {
+	gap: 2rem;
+	row-gap: 2rem;
+	width: 100%;
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+}
+input,
+label {
+	font-size: 1.1rem;
+}
+textarea,
+input {
+	width: -webkit-fill-available;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	padding: 0.5rem 0 0.25rem 0;
+	font-size: inherit;
+	font-family: inherit;
+	color: inherit;
+	background: none;
+	outline: none;
+	border: none;
+	border-bottom: 0.11rem solid var(--color-text);
+}
+textarea {
+	padding-inline: 0.5rem;
+	margin-top: 0.5rem;
+	backdrop-filter: blur(0.5rem);
+	border: 0.11rem solid var(--color-text);
+}
+input[type='checkbox'] {
+	width: 1rem;
+	height: 1rem;
+	margin: 0.1rem 0.8rem 0.1rem 0;
+}
+label:focus-within {
+	color: var(--color-theme-1);
+}
+input:focus {
+	color: var(--color-text);
+	border-color: var(--color-theme-1);
+}
+textarea:focus {
+	color: var(--color-text);
+	border-color: var(--color-theme-1);
+}
+
+form > div {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+
+	& > label {
+		white-space: nowrap;
+		margin-right: 1rem;
+	}
+
+	@media (orientation: portrait) and (aspect-ratio < 9/16) {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+}
+form > div.checkbox-container {
+	align-items: flex-start;
+	justify-content: flex-start;
+}
+.half {
+	grid-column: span 1;
+	@media (orientation: portrait) and (aspect-ratio < 9/16) {
+		grid-column: span 2;
+	}
+}
+.full {
+	grid-column: span 2;
+}
+
+button {
+	cursor: pointer;
+	display: flex;
+	height: fit-content;
+	width: fit-content;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	padding: 0.5rem 2rem;
+	font-size: clamp(1rem, 2vw, 1.2rem);
+	font-family: inherit;
+	color: var(--color-text);
+	border: none;
+	border-radius: 0.25rem;
+	background: var(--color-theme-1);
+}
+button > #icon {
+	color: var(--color-text);
+	height: 1.2rem;
+	width: auto;
+}
+button.secondary {
+	gap: 1rem;
+	font-weight: bold;
+	padding: 0.5rem 1rem;
+	color: var(--color-text);
+	background: rgba(255, 255, 255, 0.1);
+	border: 0.11rem solid var(--color-text);
+	backdrop-filter: blur(0.1rem);
+}
+button.icon-only {
+	aspect-ratio: 1;
+	padding: 1rem;
+}
+button p {
+	padding: 0;
+	margin: 0 !important;
+}
+
+button.secondary:hover {
+	box-shadow: 0 0 0 0.07rem var(--color-text) inset;
+}

@@ -56,7 +56,7 @@ compile:
 		-v $$PWD:/volume \
 		-w /volume \
 		-it clux/muslrust:nightly \
-		cargo build --release
+		cargo build --bin backend_api --release
 	sudo chown $$USER:$$USER -R target
 	strip target/x86_64-unknown-linux-musl/release/backend_api
 	mv target/x86_64-unknown-linux-musl/release/backend_api .
