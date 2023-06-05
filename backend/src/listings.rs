@@ -14,7 +14,7 @@ use rocket::response::status::{NotFound, NoContent, BadRequest};
 
 use super::{DbConn, ApiError};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone, Copy)]
 #[serde(crate = "rocket::serde")]
 #[derive(diesel_derive_enum::DbEnum, Debug)]
 #[ExistingTypePath = "crate::schema::sql_types::MarketStatus"]
@@ -101,6 +101,13 @@ pub struct FullListing {
     pub imgs: Vec<ListingImage>,
 }
 
+#[derive(Serialize)]
+#[serde(crate = "rocket::serde")]
+pub struct FullListingReturnPayload {
+    pub data: Vec<FullListing>,
+    pub size: i64,
+}
+
 impl ListingImage {
     pub async fn get_with_id(id: i32, conn: &DbConn) -> QueryResult<ListingImage> {
         conn.run(move |c| {
@@ -171,20 +178,26 @@ impl Listing {
         offset: Option<u32>,
         status: Option<MarketStatus>,
         conn: &DbConn
-    ) -> QueryResult<Vec<Listing>> 
+    ) -> QueryResult<(Vec<Listing>, i64)> 
     {
         conn.run(move |c| {
-            let mut query = all_listings.into_boxed();
+            let mut query1 = all_listings.into_boxed();
+            let mut query2 = all_listings.into_boxed();
             
             if let Some(status) = status  {
-                query = query.filter(listings::market_st.eq::<MarketStatus>(status));
+                query1 = query1.filter(listings::market_st.eq::<MarketStatus>(status));
+                query2 = query2.filter(listings::market_st.eq::<MarketStatus>(status));
             }
-
-            query
+            let size = query1
+                .count()
+                .get_result::<i64>(c)?;
+            let ls = query2
                 .order(listings::updated_at.desc())
                 .limit(limit.unwrap_or(8).into())
                 .offset(offset.unwrap_or(0).into())
-                .load::<Listing>(c)
+                .load::<Listing>(c)?;
+
+            Ok((ls, size))
         }).await
     }
 
@@ -237,7 +250,7 @@ pub async fn get_all(
     limit: Option<u8>,
     offset: Option<u32>,
     market_st: Option<String>
-) -> Result<Json<Vec<FullListing>>, StatusErr<Json<ApiError>>>
+) -> Result<Json<FullListingReturnPayload>, StatusErr<Json<ApiError>>>
 {
     let m = market_st
         .map(|v| MarketStatus::from_str(&v))
@@ -248,7 +261,7 @@ pub async fn get_all(
             }))))
         })?;
 
-    let ls = Listing::get_all(limit, offset, m, &conn)
+    let (ls, size) = Listing::get_all(limit, offset, m, &conn)
         .await
         .map_err(|e| {
             StatusErr::NotFound(NotFound(Json(ApiError {
@@ -264,7 +277,7 @@ pub async fn get_all(
             })))
         })?;
 
-    Ok(Json(data))
+    Ok(Json(FullListingReturnPayload { data, size }))
 }
 
 #[delete("/<id>")]

@@ -1,4 +1,4 @@
-#[macro_use] 
+#[macro_use]
 extern crate rocket;
 extern crate rocket_cors;
 

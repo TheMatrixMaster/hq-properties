@@ -1,4 +1,3 @@
-use diesel::associations::HasTable;
 use diesel::prelude::*;
 use diesel::result::QueryResult;
 
