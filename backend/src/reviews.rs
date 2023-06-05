@@ -1,3 +1,4 @@
+use diesel::associations::HasTable;
 use diesel::prelude::*;
 use diesel::result::QueryResult;
 
@@ -35,11 +36,27 @@ pub struct NewReview {
     pub anonymous: bool,
 }
 
+#[derive(Serialize)]
+#[serde(crate = "rocket::serde")]
+pub struct ReviewReturnPayload {
+    pub data: Vec<Review>,
+    pub size: i64,
+}
+
 impl Review {
     pub async fn get_with_id(id: i32, conn: &DbConn) -> QueryResult<Review> {
         conn.run(move |c| {
             all_reviews.find(id)
                 .first::<Review>(c)
+        }).await
+    }
+
+    pub async fn get_size(publ: Option<bool>, conn: &DbConn) -> QueryResult<i64> {
+        conn.run(move |c| {
+            all_reviews
+                .filter(reviews::published.eq::<bool>(publ.unwrap_or(true).into()))
+                .count()
+                .get_result::<i64>(c)
         }).await
     }
 
@@ -101,21 +118,27 @@ pub async fn get(conn: DbConn, id: i32) -> Result<Json<Review>, NotFound<Json<Ap
         })
 }
 
-
 #[get("/?<limit>&<offset>&<published>")]
 pub async fn get_all(
     conn: DbConn,
     limit: Option<u8>,
     offset: Option<u32>,
     published: Option<bool>
-) -> Result<Json<Vec<Review>>, Json<ApiError>>
+) -> Result<Json<ReviewReturnPayload>, Json<ApiError>>
 {
-    Review::get_all(limit, offset, published, &conn)
+    let size = Review::get_size(published, &conn)
         .await
-        .map(Json)
         .map_err(|e| {
             Json(ApiError { details: e.to_string() })
-        })
+        })?;
+
+    let data = Review::get_all(limit, offset, published, &conn)
+        .await
+        .map_err(|e| {
+            Json(ApiError { details: e.to_string() })
+        })?;
+
+    Ok(Json(ReviewReturnPayload { data, size }))
 }
 
 #[post("/", format = "json", data = "<review>")]

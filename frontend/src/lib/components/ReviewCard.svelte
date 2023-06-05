@@ -10,6 +10,8 @@
 		if (data.anonymous) return 'A';
 		else return `${data.first_name[0].toUpperCase()}${data.last_name[0].toUpperCase()}`;
 	};
+
+	$: displayTime = new Date(data.created_at).toLocaleDateString();
 </script>
 
 {#if mode === 'carousel'}
@@ -23,13 +25,13 @@
 		<div class="body-container">
 			<p>{data.body}</p>
 		</div>
-		<button class="secondary" on:click={() => goto('/reviews')}>Read More</button>
+		<button class="secondary" on:click={() => goto('/reviews/1')}>Read More</button>
 	</div>
 {:else}
 	<div class="base-card list-card">
 		<div class="list-header">
 			<h2>{data.anonymous ? 'Anonymous' : `${data.first_name} ${data.last_name}`}</h2>
-			<h3>{data.created_at}</h3>
+			<h3>{displayTime}</h3>
 		</div>
 		<p>{data.body}</p>
 	</div>
@@ -53,6 +55,7 @@
 		display: flex;
 		padding: 1rem 2rem;
 		flex-direction: column;
+		height: min-content;
 
 		& > p {
 			font-size: 1.1rem;

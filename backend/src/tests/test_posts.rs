@@ -4,6 +4,7 @@ use backend_api::{DbConn};
 use rand::{Rng, thread_rng, distributions::Alphanumeric};
 
 use crate::rocket;
+use crate::make_rocket;
 use rocket::local::asynchronous::Client;
 use rocket::http::{Status, ContentType};
 
@@ -26,7 +27,7 @@ macro_rules! run_test {
         let _lock = DB_LOCK.lock();
 
         rocket::async_test(async move {
-            let $client = Client::tracked(rocket()).await.expect("Rocket client");
+            let $client = Client::tracked(make_rocket()).await.expect("Rocket client");
             let db = DbConn::get_one($client.rocket()).await;
             let $conn = db.expect("failed to get database connection for testing");
             Post::delete_all(&$conn).await.expect("failed to delete all posts for testing");

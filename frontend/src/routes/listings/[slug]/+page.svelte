@@ -1,28 +1,24 @@
 <script>
-	import { goto } from '$app/navigation';
-	import Header from '../Header.svelte';
+	import Header from '../../Header.svelte';
 	import TitleBar from '$lib/components/TitleBar.svelte';
-	import { dummy_reviews } from '$lib/dummy';
-	import ReviewCard from '$lib/components/ReviewCard.svelte';
+	import { dummy_listings } from '$lib/dummy';
+	import ListingCard from '$lib/components/ListingCard.svelte';
 
-	let cards = dummy_reviews;
+	let cards = dummy_listings;
 </script>
 
 <svelte:head>
-	<title>Testimonials</title>
-	<meta name="reviews" content="All reviews" />
+	<title>Listings</title>
+	<meta name="listings" content="All my listings" />
 </svelte:head>
 
 <Header isTransparent={false} />
 <section>
-	<TitleBar
-		title="Testimonials"
-		action={{ label: 'Write a testimonial', onPress: () => goto('/reviews/new') }}
-	/>
+	<TitleBar title="My Listings" />
 	<div class="filter-container" />
 	<div class="card-container">
 		{#each cards as card}
-			<ReviewCard data={card} mode="list" />
+			<ListingCard data={card} mode="list" />
 		{/each}
 	</div>
 </section>
@@ -40,7 +36,8 @@
 	div.card-container {
 		display: grid;
 		grid-column: 1/13;
+		gap: 2rem;
 		row-gap: 1.5rem;
-		grid-template-columns: auto;
+		grid-template-columns: repeat(var(--carousel-num-items), auto);
 	}
 </style>

@@ -10,6 +10,7 @@
 	--color-bg-2: #333333;
 	--color-theme-1: #2f80ed;
 	--color-theme-2: #fb000b;
+	--color-theme-3: #13a93d;
 	--color-text: rgba(255, 255, 255, 1);
 	--header-height: 7rem;
 	--header-mini-height: 4rem;
@@ -281,6 +282,7 @@ form > div {
 	}
 }
 form > div.checkbox-container {
+	flex-direction: row;
 	align-items: flex-start;
 	justify-content: flex-start;
 }
@@ -333,6 +335,9 @@ button p {
 	margin: 0 !important;
 }
 
-button.secondary:hover {
+button.secondary:disabled {
+	opacity: 0.5;
+}
+button.secondary:hover:not(:disabled) {
 	box-shadow: 0 0 0 0.07rem var(--color-text) inset;
 }

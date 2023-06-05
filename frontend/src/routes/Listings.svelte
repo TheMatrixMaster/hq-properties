@@ -6,8 +6,8 @@
 </script>
 
 <section id="listings">
-	<TitleBar title="My Listings" action={{ label: 'See all', onPress: () => goto('/listings') }} />
-	<Carousel selector="listings-siema">
+	<TitleBar title="My Listings" action={{ label: 'See all', onPress: () => goto('/listings/1') }} />
+	<Carousel selector="listings-siema" maxItems={4}>
 		<ListingCard mode="carousel" />
 		<ListingCard mode="carousel" />
 		<ListingCard mode="carousel" />

@@ -4,15 +4,15 @@
 	import ArrowRight from '$lib/images/arrow-right.svg';
 	import ArrowLeft from '$lib/images/arrow-left.svg';
 
+	export let maxItems: number;
 	export let selector = 'siema';
 	let slider: Siema, prev: () => void, next: () => void;
 	let select = 0;
-	// let perPage = var(--some-prop);
 
 	onMount(() => {
-		const numItems: number = parseInt(
+		const numItems: number = Math.min(maxItems, parseInt(
 			getComputedStyle(document.documentElement).getPropertyValue('--carousel-num-items')
-		);
+		));
 
 		slider = new Siema({
 			selector: `.${selector}`,

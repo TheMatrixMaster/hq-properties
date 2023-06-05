@@ -1,6 +1,8 @@
 <script>
 	import './styles.css';
 	import profile from '$lib/images/ma.jpeg';
+	import PhoneIcon from '$lib/images/phone.svg';
+	import EmailIcon from '$lib/images/email.svg';
 </script>
 
 <section id="aboutme" class="container-center">
@@ -18,8 +20,14 @@
 				community and on a national level through Royal LePage has helped Hong develop an.
 			</p>
 			<div class="links">
-				<a href="callto::514-651-2536">514-651-2536</a>
-				<a href="mailto::hong.qu@royallepage.ca">hong.qu@royallepage.ca</a>
+				<div class="social-container">
+					<img alt="phone" src={PhoneIcon} />
+					<a href="tel::514-651-2536" target="_blank">514-651-2536</a>
+				</div>
+				<div class="social-container">
+					<img alt="mail" src={EmailIcon} />
+					<a href="mailto::hong.qu@royallepage.ca" target="_blank">hong.qu@royallepage.ca</a>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -85,6 +93,24 @@
 		}
 		.right-col div {
 			max-width: 30rem;
+		}
+	}
+	div.links {
+		display: flex;
+		flex-direction: column;
+		gap: .5rem;
+	}
+	div.social-container {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		gap: 1rem;
+		& > a {
+			margin: 0;
+		}
+		& > img {
+			height: 1.5rem;
+			width: 1.5rem;
 		}
 	}
 </style>
