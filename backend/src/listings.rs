@@ -62,6 +62,7 @@ pub struct Listing {
 #[serde(crate = "rocket::serde")]
 #[diesel(table_name = listings)]
 pub struct NewListing {
+    pub id: i32,
     pub city: String,
     pub address: String,
     pub bedrooms: i16,

@@ -19,11 +19,12 @@ fn make_new_listing_img(listing_id: i32) -> NewListingImage {
     }
 }
 
-fn make_new_listing(city: Option<String>, market_st: Option<MarketStatus>) -> NewListing {
+fn make_new_listing(id: i32, city: Option<String>, market_st: Option<MarketStatus>) -> NewListing {
     let c = city.unwrap_or("Montreal, QC".to_string()).into();
     let m = market_st.unwrap_or(MarketStatus::Sale).into();
 
     NewListing {
+        id,
         city: c,
         address: "4847 Bixby Creek Road, Carmel, CA, 93940".to_string(),
         bedrooms: 3,
