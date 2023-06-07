@@ -15,9 +15,9 @@
 			method: 'GET',
 			headers: { Accept: 'application/json' }
 		})
-			.then(resp => resp.json())
-			.then(r => reviews = r.data)
-			.catch(err => {
+			.then((resp) => resp.json())
+			.then((r) => (reviews = r.data))
+			.catch((err) => {
 				console.error(err);
 				error = err;
 			})

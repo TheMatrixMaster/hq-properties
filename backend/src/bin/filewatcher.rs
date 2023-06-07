@@ -1,4 +1,9 @@
-use notify::{RecommendedWatcher, RecursiveMode, Watcher, Config, ErrorKind};
+use backend_api::listings::{NewListing, NewListingImage};
+use backend_api::{establish_connection, FileWatcherError, schema::*};
+use diesel::{QueryResult, DecoratableTarget};
+use diesel::{RunQueryDsl, ExpressionMethods, upsert::excluded};
+use notify::{RecommendedWatcher, RecursiveMode, Watcher, Config};
+
 use std::{path::Path, ffi::OsStr};
 use std::collections::HashMap;
 use std::io::prelude::*;
@@ -9,36 +14,75 @@ const FILENAMES: [(&'static str, &'static str); 3] = [
     ("INSCRIPTIONS.TXT", "listings")
 ];
 
-fn main() {
-    let path = std::env::args()
-        .nth(1)
-        .expect("Argument 1 needs to be a path");
-    println!("watching {}", path);
-    if let Err(e) = watch(path) {
-        println!("error: {:?}", e)
+fn make_err(err: &str) -> FileWatcherError {
+    FileWatcherError { details: err.to_string() }
+}
+
+fn upsert_listings(listings: Vec<NewListing>) -> QueryResult<usize> {
+    use backend_api::schema::listings::*;
+    let connection = &mut establish_connection();
+
+    diesel::insert_into(listings::table)
+        .values(&listings)
+        .on_conflict(listings::id)
+        .filter_target(updated_at.ne(excluded(updated_at)))
+        .do_update()
+        .set((
+            price.eq(excluded(price)),
+            market_st.eq(excluded(market_st)),
+            updated_at.eq(excluded(updated_at))
+        ))
+        .execute(connection)
+}
+
+fn upsert_listing_images(listing_images: Vec<NewListingImage>) -> QueryResult<usize> {
+    use backend_api::schema::listing_images::*;
+    let connection = &mut establish_connection();
+
+    diesel::insert_into(listing_images::table)
+        .values(&listing_images)
+        .on_conflict(listing_images::id)
+        .filter_target(url.ne(excluded(url)))
+        .do_update()
+        .set((
+            url.eq(excluded(url)),
+            priority.eq(excluded(priority)),
+            tag.eq(excluded(tag)),
+        ))
+        .execute(connection)
+}
+
+fn parse_listings(data: &mut Vec<u8>) -> Result<(), FileWatcherError> {
+    let mut rdr = csv::ReaderBuilder::new()
+        .has_headers(false)
+        .from_reader(data.as_slice());
+
+    for record in rdr.byte_records() {
+        let r = match record {
+            Ok(v) => v,
+            Err(e) => {
+                println!("{e}");
+                continue;
+            }
+        };
+        println!("{:}: {:?}", r.len(), r);
     }
+
+    Ok(())
 }
 
-fn make_err(err: &str) -> notify::Error {
-    notify::Error::new(ErrorKind::Generic(err.to_string()))
-}
-
-fn parse_listings(data: &mut Vec<u8>) -> () {
-    // let t = data.to_owned();
-    // read listings line by line and 
-    
-}
-
-fn watch<P: AsRef<Path>>(path: P) -> notify::Result<()> {
+fn watch<P: AsRef<Path>>(path: P) -> Result<(), FileWatcherError> {
     let (tx, rx) = std::sync::mpsc::channel();
 
     // Automatically select the best implementation for your platform.
     // You can also access each implementation directly e.g. INotifyWatcher.
-    let mut watcher = RecommendedWatcher::new(tx, Config::default())?;
+    let mut watcher = RecommendedWatcher::new(tx, Config::default())
+        .expect("FAILURE: Could not initialize `FsEventWatcher` struct");
 
     // Add a path to be watched. All files and directories at that path and
     // below will be monitored for changes.
-    watcher.watch(path.as_ref(), RecursiveMode::NonRecursive)?;
+    watcher.watch(path.as_ref(), RecursiveMode::NonRecursive)
+        .expect("FAILURE: Failed to start watcher service to watch provided path");
 
     for res in rx {
         match res {
@@ -48,7 +92,7 @@ fn watch<P: AsRef<Path>>(path: P) -> notify::Result<()> {
                         .get(0)
                         .ok_or(make_err("Expected file path for associated create event")) {
                             Ok(v) => v,
-                            Err(e) => { println!("{:}", e); continue; },
+                            Err(e) => { println!("{:}", e.details); continue; },
                         };
 
                     let is_file_stem_valid = match main_path
@@ -56,14 +100,14 @@ fn watch<P: AsRef<Path>>(path: P) -> notify::Result<()> {
                         .and_then(OsStr::to_str)
                         .ok_or(make_err("Expected file path to have a valid file stem")) {
                             Ok(v) => v.starts_with("HONGQU"),
-                            Err(e) => { println!("{:}", e); continue; },
+                            Err(e) => { println!("{:}", e.details); continue; },
                         };
 
                     let extension = match main_path
                         .extension()
                         .ok_or(make_err("Expected file path to have a valid file extension")) {
                             Ok(v) => v.to_str(),
-                            Err(e) => { println!("{:}", e); continue; },
+                            Err(e) => { println!("{:}", e.details); continue; },
                         };
 
                     match (is_file_stem_valid, main_path.is_file(), extension) {
@@ -123,4 +167,14 @@ fn watch<P: AsRef<Path>>(path: P) -> notify::Result<()> {
     }
 
     Ok(())
+}
+
+fn main() {
+    let path = std::env::args()
+        .nth(1)
+        .expect("Argument 1 needs to be a path");
+    println!("watching {}", path);
+    if let Err(e) = watch(path) {
+        println!("error: {:?}", e)
+    }
 }

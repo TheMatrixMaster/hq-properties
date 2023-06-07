@@ -10,9 +10,10 @@
 	let select = 0;
 
 	onMount(() => {
-		const numItems: number = Math.min(maxItems, parseInt(
-			getComputedStyle(document.documentElement).getPropertyValue('--carousel-num-items')
-		));
+		const numItems: number = Math.min(
+			maxItems,
+			parseInt(getComputedStyle(document.documentElement).getPropertyValue('--carousel-num-items'))
+		);
 
 		slider = new Siema({
 			selector: `.${selector}`,

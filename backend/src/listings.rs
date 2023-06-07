@@ -69,7 +69,8 @@ pub struct NewListing {
     pub bathrooms: i16,
     pub area: i32,
     pub price: i32,
-    pub market_st: MarketStatus
+    pub market_st: MarketStatus,
+    pub updated_at: NaiveDateTime
 }
 
 #[derive(Identifiable, Queryable, Selectable, Associations, Serialize, Deserialize)]
@@ -82,13 +83,14 @@ pub struct ListingImage {
     pub url: String,
     pub priority: i16,
     pub tag: Option<String>,
-    pub created_at: NaiveDateTime,
+    pub created_at: NaiveDateTime
 }
 
 #[derive(Insertable, Serialize, Deserialize)]
 #[serde(crate = "rocket::serde")]
 #[diesel(table_name = listing_images)]
 pub struct NewListingImage {
+    pub id: i32,
     pub listing_id: i32,
     pub url: String,
     pub priority: i16,

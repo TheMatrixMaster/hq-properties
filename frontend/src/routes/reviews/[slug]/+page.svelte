@@ -16,21 +16,21 @@
 	let fetching: boolean = true;
 
 	$: page = parseInt(data.slug) ?? 1;
-	$: offset = (page-1) * LIMIT;
+	$: offset = (page - 1) * LIMIT;
 
 	onMount(() => {
 		fetch(`${PUBLIC_SERVER_URL}/reviews?limit=${LIMIT}&offset=${offset}&published=false`)
-			.then(resp => resp.json())
-			.then(r => {
+			.then((resp) => resp.json())
+			.then((r) => {
 				console.log(r);
 				size = r.size;
 				reviews = r.data;
 			})
-			.catch(err => error = err)
-			.then(() => fetching = false);
+			.catch((err) => (error = err))
+			.then(() => (fetching = false));
 	});
 
-	$: numPages = Math.ceil(size/LIMIT);
+	$: numPages = Math.ceil(size / LIMIT);
 	$: console.log(numPages);
 
 	const changePage = (page: number) => goto(`/reviews/${page}`);
@@ -61,12 +61,7 @@
 			{/each}
 		{/if}
 	</div>
-	<Pagination
-		size={size}
-		limit={LIMIT}
-		offset={offset}
-		onPress={changePage}
-	/>
+	<Pagination {size} limit={LIMIT} {offset} onPress={changePage} />
 </section>
 
 <style>

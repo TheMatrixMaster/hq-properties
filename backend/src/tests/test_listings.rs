@@ -1,6 +1,7 @@
 use backend_api::listings::{Listing, NewListing, ListingImage, NewListingImage, MarketStatus};
 use backend_api::{DbConn};
 
+use chrono::{NaiveDateTime};
 use rand::{Rng, thread_rng, distributions::Alphanumeric};
 
 use crate::rocket;
@@ -10,8 +11,9 @@ use rocket::http::{Status, ContentType};
 
 static DB_LOCK: parking_lot::Mutex<()> = parking_lot::const_mutex(());
 
-fn make_new_listing_img(listing_id: i32) -> NewListingImage {
+fn make_new_listing_img(id: i32, listing_id: i32) -> NewListingImage {
     NewListingImage {
+        id,
         listing_id: listing_id,
         url: "https://ts1.cn.mm.bing.net/th/id/R-C.652b794060c61d86c1f9c94efbc7b6ee?rik=8rmgkkPC6irH1w&pid=ImgRaw&r=0".to_string(),
         priority: 1,
@@ -31,7 +33,8 @@ fn make_new_listing(id: i32, city: Option<String>, market_st: Option<MarketStatu
         bathrooms: 2,
         area: 600,
         price: 820000,
-        market_st: m
+        market_st: m,
+        updated_at: NaiveDateTime::default(),
     }
 }
 

@@ -19,3 +19,4 @@ env.sh
 aws/
 diesel-demo/
 svelte-demo-app/
+rust-docker-demo/

@@ -20,6 +20,11 @@ pub struct ApiError {
     pub details: String,
 }
 
+#[derive(Debug)]
+pub struct FileWatcherError {
+    pub details: String,
+}
+
 pub fn establish_connection() -> PgConnection {
     dotenv().ok();
 
