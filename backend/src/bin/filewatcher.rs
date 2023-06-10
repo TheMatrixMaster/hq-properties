@@ -1,9 +1,9 @@
-use backend_api::listings::{NewListing, NewListingImage};
-use backend_api::{establish_connection, FileWatcherError, schema::*};
-use diesel::{QueryResult, DecoratableTarget};
-use diesel::{RunQueryDsl, ExpressionMethods, upsert::excluded};
+use backend_api::*;
+use backend_api::listings::{NewListing, MarketStatus, NewListingImage};
 use notify::{RecommendedWatcher, RecursiveMode, Watcher, Config};
 
+use chrono::NaiveDateTime;
+use rocket::serde::{Deserialize};
 use std::{path::Path, ffi::OsStr};
 use std::collections::HashMap;
 use std::io::prelude::*;
@@ -14,42 +14,148 @@ const FILENAMES: [(&'static str, &'static str); 3] = [
     ("INSCRIPTIONS.TXT", "listings")
 ];
 
+#[derive(Deserialize, Debug)]
+#[serde(crate = "rocket::serde")]
+pub struct GeocodeAddress {
+    pub suburb: Option<String>,
+    pub city: Option<String>,
+    pub town: Option<String>,
+    // pub state: String,
+}
+
+#[derive(Deserialize, Debug)]
+#[serde(crate = "rocket::serde")]
+pub struct GeocodeResp {
+    address: GeocodeAddress,
+}
+
 fn make_err(err: &str) -> FileWatcherError {
     FileWatcherError { details: err.to_string() }
 }
 
-fn upsert_listings(listings: Vec<NewListing>) -> QueryResult<usize> {
-    use backend_api::schema::listings::*;
-    let connection = &mut establish_connection();
-
-    diesel::insert_into(listings::table)
-        .values(&listings)
-        .on_conflict(listings::id)
-        .filter_target(updated_at.ne(excluded(updated_at)))
-        .do_update()
-        .set((
-            price.eq(excluded(price)),
-            market_st.eq(excluded(market_st)),
-            updated_at.eq(excluded(updated_at))
-        ))
-        .execute(connection)
+trait LogErrorTrait<T> {
+    fn log_err(self, err_msg: &str) -> Option<T>;
 }
 
-fn upsert_listing_images(listing_images: Vec<NewListingImage>) -> QueryResult<usize> {
-    use backend_api::schema::listing_images::*;
-    let connection = &mut establish_connection();
+impl<T> LogErrorTrait<T> for Option<T> {
+    fn log_err(self, err_msg: &str) -> Option<T> {
+        if self.is_none() { println!("{err_msg}"); }
+        self
+    }
+}
 
-    diesel::insert_into(listing_images::table)
-        .values(&listing_images)
-        .on_conflict(listing_images::id)
-        .filter_target(url.ne(excluded(url)))
-        .do_update()
-        .set((
-            url.eq(excluded(url)),
-            priority.eq(excluded(priority)),
-            tag.eq(excluded(tag)),
-        ))
-        .execute(connection)
+pub fn parse_f64(bytes: Option<&[u8]>) -> Option<f64> {
+    parse_str(bytes)
+        .map(|f| f.parse::<f64>().ok())
+        .flatten()
+}
+
+pub fn parse_i32(bytes: Option<&[u8]>) -> Option<i32> {
+    parse_str(bytes)
+        .map(|s| s.parse::<i32>().ok())
+        .flatten()
+}
+
+pub fn parse_i16(bytes: Option<&[u8]>) -> Option<i16> {
+    parse_str(bytes)
+        .map(|s| s.parse::<i16>().ok())
+        .flatten()
+}
+
+pub fn parse_str(bytes: Option<&[u8]>) -> Option<String> {
+    bytes
+        .map(|b| String::from_utf8_lossy(b))
+        .map(|nb| nb.to_string())
+        .filter(|s| !s.is_empty())
+}
+
+pub fn parse_market_st(string: Option<String>) -> Option<MarketStatus> {
+    match string?.as_str() {
+        "EV" => Some(MarketStatus::Sale),
+        "VE" => Some(MarketStatus::Sold),
+        _ => Some(MarketStatus::Expired),
+        // _ => Some(MarketStatus::Rent)
+    }
+}
+
+pub fn parse_datetime(string: Option<String>) -> Option<NaiveDateTime> {
+    string
+        .map(|s| NaiveDateTime::parse_from_str(&s, "%Y/%m/%d %T").ok())
+        .flatten()
+}
+
+pub fn geocode_city_from_coords(lat: f64, long: f64) -> Result<String, Box<dyn std::error::Error>> {
+    let url = format!("https://geocode.maps.co/reverse?lat={lat}&lon={long}");
+    let resp = 
+        reqwest::blocking::get(url)?
+        .json::<GeocodeResp>()?;
+    
+    let city = resp.address.city;
+    let town = resp.address.town;
+    let suburb = resp.address.suburb;
+    
+    let ans = {
+        if town.is_some() { format!("{:}", town.unwrap()) }
+        else if city.is_some() && suburb.is_some() {
+            format!("{:} ({:})", city.unwrap(), suburb.unwrap())
+        } else if city.is_some() { city.unwrap() }
+        else if suburb.is_some() { suburb.unwrap() }
+        else { "Montreal".to_string() }
+    };
+
+    Ok(ans)
+}
+
+pub fn parse_address(
+    h1: String,
+    h2: Option<String>,
+    street: String,
+    no: Option<String>,
+    pcode: String
+) -> String {
+    let house_no = h2
+        .map_or(h1.clone(), |b| format!("{h1}-{b}"));
+    let street_no = no
+        .map_or(street.clone(), |b| format!("{street} #{b}"));
+
+    format!("{house_no} {street_no}, {pcode}")
+}
+
+fn parse_listing_images(data: &mut Vec<u8>) -> Result<(), FileWatcherError> {
+    let mut rdr = csv::ReaderBuilder::new()
+        .has_headers(false)
+        .from_reader(data.as_slice());
+
+    let res = rdr.byte_records().enumerate().filter_map(|(index, record)| {
+        println!("Parsing photos file, row#{index}");
+
+        let r = record
+            .map_err(|e| { println!("{e}") })
+            .ok()?;
+
+        let id = parse_i32(r.get(7))?;
+        let listing_id = parse_i32(r.get(0))?;
+        let priority = parse_i16(r.get(1)).unwrap_or(-1);
+        let tag = parse_str(r.get(3));
+        let url = parse_str(r.get(6))?;
+
+        Some(NewListingImage {
+            id,
+            listing_id,
+            url,
+            priority,
+            tag
+        })
+    }).collect::<Vec<NewListingImage>>();
+
+    let upserted_images = match upsert_listing_images(res) {
+        Ok(v) => v,
+        Err(e) => { println!("{e}"); panic!("Failed to insert listing images into database!") }
+    };
+
+    println!("Successfully upserted {upserted_images} images into the db!");
+
+    Ok(())
 }
 
 fn parse_listings(data: &mut Vec<u8>) -> Result<(), FileWatcherError> {
@@ -57,16 +163,62 @@ fn parse_listings(data: &mut Vec<u8>) -> Result<(), FileWatcherError> {
         .has_headers(false)
         .from_reader(data.as_slice());
 
-    for record in rdr.byte_records() {
-        let r = match record {
-            Ok(v) => v,
-            Err(e) => {
-                println!("{e}");
-                continue;
-            }
-        };
-        println!("{:}: {:?}", r.len(), r);
-    }
+    let res = rdr.byte_records().enumerate().filter_map(|(index, record)| {
+        println!("Parsing index file, row #{index}");
+
+        let r = record
+            .map_err(|e| { println!("{e}") })
+            .ok()?;
+
+        let id = parse_i32(r.get(0)).log_err("Failed on parse id")?;
+        let bedrooms = parse_i16(r.get(82)).unwrap_or(-1);
+        let bathrooms = parse_i16(r.get(85)).unwrap_or(-1);
+
+        let area = parse_f64(r.get(68))
+            .or_else(|| parse_f64(r.get(75)))
+            .log_err("Failed on parse area")?;
+
+        let price = parse_i32(r.get(6)).log_err("Failed on parse price")?;
+        let market_st = parse_market_st(parse_str(r.get(115)))
+            .log_err("Failed on parse market status")?;
+        let updated_at = parse_datetime(parse_str(r.get(113)))
+            .log_err("Failed on parse datetime")?;
+
+        let h1 = parse_str(r.get(25)).log_err("Failed on parse house number")?;
+        let h2 = parse_str(r.get(26));
+        let street = parse_str(r.get(27)).log_err("Failed on parse street")?;
+        let no = parse_str(r.get(28));
+        let pcode = parse_str(r.get(29)).log_err("Failed on parse postal code")?;
+        let address = parse_address(h1, h2, street, no, pcode);
+
+        let latitude = parse_f64(r.get(144)).log_err("Failed on parse latitude")?;
+        let longitude = parse_f64(r.get(145)).log_err("Failed on parse longitude")?;
+        let city = geocode_city_from_coords(latitude, longitude)
+            .map_err(|e| { println!("{e}") })
+            .ok()?;
+
+        let listing_url = parse_str(r.get(132)).log_err("Failed to parse passerelle url")?;
+
+        Some(NewListing {
+            id,
+            city,
+            address,
+            listing_url,
+            bedrooms,
+            bathrooms,
+            area,
+            price,
+            market_st,
+            updated_at
+        })
+    }).collect::<Vec<NewListing>>();
+
+    let upserted_listings = match upsert_listings(res) {
+        Ok(v) => v,
+        Err(e) => { println!("{e}"); panic!("Failed to insert listings into database!") }
+    };
+
+    println!("Successfully upserted {upserted_listings} listings into the db!");
 
     Ok(())
 }
@@ -150,7 +302,8 @@ fn watch<P: AsRef<Path>>(path: P) -> Result<(), FileWatcherError> {
                             if did_fail { continue }
 
                             // Process listings
-                            parse_listings(data.get_mut("listings").unwrap());
+                            let _ = parse_listings(data.get_mut("listings").unwrap());
+                            let _ = parse_listing_images(data.get_mut("photos").unwrap());
                         },
                         _ => {
                             println!("Deleting unexpected file: {:?}", main_path);

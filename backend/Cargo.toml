@@ -12,7 +12,7 @@ path = "src/main.rs"
 
 [dependencies]
 chrono = { version = "0.4.20", default-features = false, features = ["clock", "std", "serde"] }
-diesel = { version = "2.0.0", features = ["postgres", "chrono", "r2d2"] }
+diesel = { version = "2.1.0", features = ["postgres", "chrono", "r2d2"] }
 dotenvy = "0.15.0"
 rocket = { version = "0.5.0-rc.3", "features"=["json"] }
 rocket_contrib = { version = "0.4.10", default-features = false, features = ["json"] }
@@ -22,6 +22,7 @@ rocket_cors = { git = "https://github.com/lawliet89/rocket_cors", branch = "mast
 notify = { version = "6.0.0", features = ["serde"] }
 zip = { version = "0.6.6" }
 csv = "1.2.2"
+reqwest = { version = "0.11", features = ["blocking", "json"] }
 
 [dev-dependencies]
 parking_lot = "0.12.1"

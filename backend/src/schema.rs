@@ -7,6 +7,17 @@ pub mod sql_types {
 }
 
 diesel::table! {
+    contact_messages (id) {
+        id -> Int4,
+        name -> Varchar,
+        email -> Varchar,
+        phone -> Varchar,
+        body -> Text,
+        created_at -> Timestamp,
+    }
+}
+
+diesel::table! {
     listing_images (id) {
         id -> Int4,
         listing_id -> Int4,
@@ -25,9 +36,10 @@ diesel::table! {
         id -> Int4,
         city -> Varchar,
         address -> Varchar,
+        listing_url -> Text,
         bedrooms -> Int2,
         bathrooms -> Int2,
-        area -> Int4,
+        area -> Float8,
         price -> Int4,
         market_st -> MarketStatus,
         created_at -> Timestamp,
@@ -71,6 +83,7 @@ diesel::table! {
 diesel::joinable!(listing_images -> listings (listing_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
+    contact_messages,
     listing_images,
     listings,
     posts,

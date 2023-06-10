@@ -21,7 +21,8 @@ use super::{DbConn, ApiError};
 pub enum MarketStatus {
     Sold,
     Sale,
-    Rent
+    Rent,
+    Expired
 }
 
 impl FromStr for MarketStatus {
@@ -31,6 +32,7 @@ impl FromStr for MarketStatus {
             "sold" => Ok(MarketStatus::Sold),
             "sale" => Ok(MarketStatus::Sale),
             "rent" => Ok(MarketStatus::Rent),
+            "expired" => Ok(MarketStatus::Expired),
             _ => Err(format!("Unrecognized market status: {}", s)),
         }
     }
@@ -49,25 +51,27 @@ pub struct Listing {
     pub id: i32,
     pub city: String,
     pub address: String,
+    pub listing_url: String,
     pub bedrooms: i16,
     pub bathrooms: i16,
-    pub area: i32,
+    pub area: f64,
     pub price: i32,
     pub market_st: MarketStatus,
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime
 }
 
-#[derive(Insertable, Serialize, Deserialize)]
+#[derive(Insertable, Serialize, Deserialize, Debug)]
 #[serde(crate = "rocket::serde")]
 #[diesel(table_name = listings)]
 pub struct NewListing {
     pub id: i32,
     pub city: String,
     pub address: String,
+    pub listing_url: String,
     pub bedrooms: i16,
     pub bathrooms: i16,
-    pub area: i32,
+    pub area: f64,
     pub price: i32,
     pub market_st: MarketStatus,
     pub updated_at: NaiveDateTime
@@ -121,13 +125,18 @@ impl ListingImage {
     pub async fn get_with_listing_id(listing_id: i32, conn: &DbConn) -> QueryResult<Vec<ListingImage>> {
         conn.run(move |c| {
             let listing = all_listings.find(listing_id).first::<Listing>(c)?;
-            ListingImage::belonging_to(&listing).load::<ListingImage>(c)
+            ListingImage::belonging_to(&listing)
+                .order(listing_images::priority.asc())
+                .load::<ListingImage>(c)
         }).await
     }
 
     pub async fn get_with_listing_ids(ls: Vec<Listing>, conn: &DbConn) -> QueryResult<Vec<FullListing>> {
         conn.run(move |c| {
-            match ListingImage::belonging_to(&ls).load::<ListingImage>(c) {
+            match ListingImage::belonging_to(&ls)
+                    .order(listing_images::priority.asc())
+                    .load::<ListingImage>(c)
+            {
                 Ok(imgs) => Ok(
                     imgs.grouped_by(&ls)
                         .into_iter()
