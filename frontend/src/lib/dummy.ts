@@ -2,11 +2,12 @@ export type Listing = {
 	id: number;
 	city: string;
 	address: string;
+	listing_url: string;
 	bedrooms: number;
 	bathrooms: number;
 	area: number;
 	price: number;
-	market_st: 'sale' | 'sold' | 'rent';
+	market_st: 'Sale' | 'Sold' | 'Rent' | 'Expired';
 	created_at: string;
 	updated_at: string;
 };
@@ -28,11 +29,12 @@ const full_listing: FullListing = {
 		id: -1,
 		city: 'Montreal, QC',
 		address: '4847 Bixby Creek Road, Carmel, CA, 93940',
+		listing_url: 'https://passerelle.centris.ca/redirect.aspx?CodeDest=ROYALLEPAGE&NoMLS=14918395',
 		bedrooms: 4,
 		bathrooms: 3,
 		area: 8491,
 		price: 18950000,
-		market_st: 'sale',
+		market_st: 'Sale',
 		created_at: '100',
 		updated_at: '100'
 	},

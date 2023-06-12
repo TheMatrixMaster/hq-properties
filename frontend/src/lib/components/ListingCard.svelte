@@ -10,7 +10,7 @@
 	$: formattedPrice = `$${data.listing.price.toLocaleString()}`;
 	$: marketStatus = (() => {
 		switch (data.listing.market_st) {
-			case 'sold':
+			case 'Sold':
 				return 'Sold';
 			default:
 				return `for ${data.listing.market_st}`;
@@ -18,9 +18,9 @@
 	})();
 </script>
 
-<div class={`card-container ${mode}`}>
+<a class={`card-container ${mode}`} href={data.listing.listing_url} target="_blank">
 	<div class="img-container">
-		<div class={`market-state ${data.listing.market_st}`}>
+		<div class={`market-state ${data.listing.market_st.toLowerCase()}`}>
 			{marketStatus}
 		</div>
 		<img alt="property-img" src={data.imgs[0].url} />
@@ -29,20 +29,24 @@
 		<h2>{data.listing.city}</h2>
 		<p>{data.listing.address}</p>
 		<div class="specs-container">
-			<div class="spec">
-				<div>
-					<h2>{data.listing.bedrooms}</h2>
-					<img alt="bed-icon" src={BedIcon} />
+			{#if data.listing.bedrooms >= 0}
+				<div class="spec">
+					<div>
+						<h2>{data.listing.bedrooms}</h2>
+						<img alt="bed-icon" src={BedIcon} />
+					</div>
+					<p>Bedrooms</p>
 				</div>
-				<p>Bedrooms</p>
-			</div>
-			<div class="spec">
-				<div>
-					<h2>{data.listing.bathrooms}</h2>
-					<img alt="bath-icon" src={BathIcon} />
+			{/if}
+			{#if data.listing.bathrooms >= 0}
+				<div class="spec">
+					<div>
+						<h2>{data.listing.bathrooms}</h2>
+						<img alt="bath-icon" src={BathIcon} />
+					</div>
+					<p>Bathrooms</p>
 				</div>
-				<p>Bathrooms</p>
-			</div>
+			{/if}
 			<div class="spec">
 				<div>
 					<h2>{data.listing.area}</h2>
@@ -52,9 +56,18 @@
 		</div>
 		<h2>{formattedPrice}</h2>
 	</div>
-</div>
+</a>
 
 <style>
+	a {
+		color: var(--color-text);
+		text-decoration: none;
+	}
+	a:hover {
+		& > div.img-container {
+			opacity: 0.6;
+		}
+	}
 	.card-container {
 		display: grid;
 		max-width: 100%;
@@ -68,9 +81,18 @@
 	}
 	.info-container {
 		display: flex;
+		overflow: hidden;
 		padding: 1rem 1rem;
 		flex-direction: column;
 		justify-content: space-between;
+		& > h2 {
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+		}
+		& > p {
+			margin: 0.2rem 0 0 0;
+		}
 	}
 	.info-container > div {
 		display: flex;
@@ -81,9 +103,6 @@
 		margin: 0;
 		font-size: 1.6rem;
 		font-weight: bold;
-	}
-	.info-container > p {
-		margin: 0.2rem 0 0 0;
 	}
 	.specs-container {
 		display: grid;

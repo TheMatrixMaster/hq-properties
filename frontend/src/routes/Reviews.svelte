@@ -34,6 +34,8 @@
 	/>
 	{#if fetching}
 		<p>Loading</p>
+	{:else if reviews.length == 0}
+		<p>No reviews have been written yet.</p>
 	{:else if error}
 		<p>{error}</p>
 	{:else}

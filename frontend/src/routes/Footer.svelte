@@ -11,6 +11,50 @@
 	import IgIcon from '$lib/images/instagram.svg';
 	import LinkedinIcon from '$lib/images/linkedin.svg';
 	import WeChatIcon from '$lib/images/wechat.svg';
+
+	import { PUBLIC_SERVER_URL } from '$env/static/public';
+
+	const SUCCESS_MSG: string =
+		'Thank you very much! We have received your message and will reply shortly.';
+	const ERROR_MSG: string = 'Form input is invalid, please try again.';
+
+	let alert: { msg: string; mode: 'success' | 'danger' } | null = null;
+
+	const isRequiredFieldValid = (val: any) => val != null && val !== '';
+
+	const onSubmit = (e: any) => {
+		const formData = new FormData(e.target);
+
+		let isValid = true;
+		const body: any = {};
+
+		for (let field of formData) {
+			const [key, value] = field;
+			body[key] = value;
+			isValid = isValid && isRequiredFieldValid(value);
+		}
+
+		if (!isValid) {
+			alert = { msg: ERROR_MSG, mode: 'danger' };
+			console.error(ERROR_MSG);
+			return;
+		}
+
+		return fetch(`${PUBLIC_SERVER_URL}/contact`, {
+			method: 'POST',
+			headers: {
+				Accept: 'application/json',
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(body)
+		})
+			.then((resp) => resp.json())
+			.then((_) => (alert = { msg: SUCCESS_MSG, mode: 'success' }))
+			.catch((err) => {
+				console.error(err);
+				alert = { msg: err, mode: 'danger' };
+			});
+	};
 </script>
 
 <footer id="contact">
@@ -64,22 +108,36 @@
 		<div class="flat-sep" />
 		<div class="right-col">
 			<h2>Send a Message</h2>
-			<form>
+			<form on:submit|preventDefault={onSubmit}>
 				<label class="full">
 					Name
-					<input type="text" />
+					<input required id="name" name="name" type="text" placeholder="ex: John Smith" value="" />
 				</label>
 				<label class="full">
 					Email
-					<input type="email" />
+					<input
+						required
+						id="email"
+						name="email"
+						type="email"
+						placeholder="ex: john.smith@email.ca"
+						value=""
+					/>
 				</label>
 				<label class="full">
 					Phone
-					<input type="tel" />
+					<input required id="phone" name="phone" type="tel" value="" />
 				</label>
 				<label class="full">
 					Message
-					<textarea rows="5" placeholder="Write a message..." />
+					<textarea
+						required
+						id="body"
+						name="body"
+						rows="5"
+						placeholder="Write a message..."
+						value=""
+					/>
 				</label>
 				<button class="primary" type="submit">Submit</button>
 			</form>

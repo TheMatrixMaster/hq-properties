@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { PUBLIC_SERVER_URL } from '$env/static/public';
 	import { goto } from '$app/navigation';
 	import Header from '../../Header.svelte';
 	import TitleBar from '$lib/components/TitleBar.svelte';
@@ -10,28 +8,8 @@
 	const LIMIT: number = 8;
 	export let data;
 
-	let size: number;
-	let reviews: any;
-	let error: string;
-	let fetching: boolean = true;
-
 	$: page = parseInt(data.slug) ?? 1;
 	$: offset = (page - 1) * LIMIT;
-
-	onMount(() => {
-		fetch(`${PUBLIC_SERVER_URL}/reviews?limit=${LIMIT}&offset=${offset}&published=false`)
-			.then((resp) => resp.json())
-			.then((r) => {
-				console.log(r);
-				size = r.size;
-				reviews = r.data;
-			})
-			.catch((err) => (error = err))
-			.then(() => (fetching = false));
-	});
-
-	$: numPages = Math.ceil(size / LIMIT);
-	$: console.log(numPages);
 
 	const changePage = (page: number) => goto(`/reviews/${page}`);
 </script>
@@ -49,19 +27,19 @@
 	/>
 	<div class="filter-container" />
 	<div class="card-container">
-		{#if fetching}
+		{#if data.fetching}
 			<p>Loading</p>
-		{:else if error}
-			<p>{error}</p>
-		{:else if reviews.length === 0}
+		{:else if data.error}
+			<p>{data.error}</p>
+		{:else if data.reviews.length === 0}
 			<p>It's a little empty in here. Why don't you write the first review!</p>
 		{:else}
-			{#each reviews as card}
+			{#each data.reviews as card}
 				<ReviewCard data={card} mode="list" />
 			{/each}
 		{/if}
 	</div>
-	<Pagination {size} limit={LIMIT} {offset} onPress={changePage} />
+	<Pagination size={data.size} limit={LIMIT} {offset} onPress={changePage} />
 </section>
 
 <style>

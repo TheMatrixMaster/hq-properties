@@ -1,4 +1,15 @@
 node_modules
-#build
+
 .dockerignore
 Dockerfile
+
+.vscode
+.git
+.gitattributes
+
+.eslintignore
+.eslintrc.cjs
+.prettierrc
+.pretieriignore
+
+README.md

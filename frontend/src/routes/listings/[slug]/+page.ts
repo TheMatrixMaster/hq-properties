@@ -1,21 +1,21 @@
 import { PUBLIC_SERVER_URL } from '$env/static/public';
 
-const LIMIT: number = 8;
+const LIMIT: number = 6;
 
 export const load = async ({ fetch, params }) => {
-	let fetching: boolean = true;
-	let error: string = '';
 	let size: number = 0;
-	let reviews: any = [];
+	let listings: any = [];
+	let error: string = '';
+	let fetching: boolean = true;
 
 	const page: number = parseInt(params.slug) ?? 1;
 	const offset: number = (page - 1) * LIMIT;
 
-	await fetch(`${PUBLIC_SERVER_URL}/reviews?limit=${LIMIT}&offset=${offset}&published=false`)
+	await fetch(`${PUBLIC_SERVER_URL}/listings?limit=${LIMIT}&offset=${offset}`)
 		.then((resp) => resp.json())
 		.then((r) => {
 			size = r.size;
-			reviews = r.data;
+			listings = r.data;
 		})
 		.catch((err) => {
 			console.error(err);
@@ -25,7 +25,7 @@ export const load = async ({ fetch, params }) => {
 
 	return {
 		slug: params.slug,
-		reviews,
+		listings,
 		size,
 		error,
 		fetching

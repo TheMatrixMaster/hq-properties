@@ -4,14 +4,18 @@
 	export let offset: number;
 	export let onPress: (page: number) => void;
 
-	$: numPages = Math.ceil(size / limit);
+	$: numPages = Math.max(Math.ceil(size / limit), 1);
 	$: currPage = Math.floor(offset / limit) + 1;
 	$: start = offset + 1;
 	$: end = Math.min(offset + 1 + limit, size);
 </script>
 
 <div class="main-container">
-	<p>Showing <strong>{start}</strong> to <strong>{end}</strong> of {size} entries</p>
+	{#if size > 0}
+		<p>Showing <strong>{start}</strong> to <strong>{end}</strong> of {size} entries</p>
+	{:else}
+		<p>Showing <strong>0</strong> of {size} entries</p>
+	{/if}
 	<div class="btn-container">
 		<button class="secondary" disabled={currPage === 1} on:click={() => onPress(currPage - 1)}>
 			Previous

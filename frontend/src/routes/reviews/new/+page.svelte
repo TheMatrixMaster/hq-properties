@@ -62,15 +62,29 @@
 	<form on:submit|preventDefault={onSubmit}>
 		<label class="half">
 			First name
-			<input type="text" id="first_name" name="first_name" placeholder="ex: John" value="" />
+			<input
+				required
+				type="text"
+				id="first_name"
+				name="first_name"
+				placeholder="ex: John"
+				value=""
+			/>
 		</label>
 		<label class="half">
 			Last name
-			<input type="text" id="last_name" name="last_name" placeholder="ex: Smith" value="" />
+			<input
+				required
+				type="text"
+				id="last_name"
+				name="last_name"
+				placeholder="ex: Smith"
+				value=""
+			/>
 		</label>
 		<label class="full textbox">
 			Review
-			<textarea id="body" name="body" rows="8" value="" placeholder="Write a review..." />
+			<textarea required id="body" name="body" rows="8" value="" placeholder="Write a review..." />
 		</label>
 		<div class="full checkbox-container">
 			<input type="checkbox" name="anonymous" id="anonymous" value={true} />
