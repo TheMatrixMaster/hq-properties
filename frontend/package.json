@@ -13,7 +13,9 @@
 		"format": "prettier --plugin-search-dir . --write ."
 	},
 	"devDependencies": {
+		"@sveltejs/adapter-auto": "^2.1.0",
 		"@sveltejs/adapter-node": "^1.2.4",
+		"@sveltejs/adapter-static": "^2.0.2",
 		"@sveltejs/kit": "^1.5.0",
 		"@types/siema": "^1.4.8",
 		"@typescript-eslint/eslint-plugin": "^5.45.0",
@@ -30,10 +32,10 @@
 		"vite": "^4.3.0",
 		"vitest": "^0.25.3"
 	},
-	"type": "module",
 	"dependencies": {
 		"@fontsource/karla": "^5.0.1",
 		"dotenv": "^16.1.4",
 		"siema": "^1.5.1"
-	}
+	},
+	"type": "module"
 }
