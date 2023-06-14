@@ -100,7 +100,7 @@ fn test_upsert_listing_images() {
             Err(e) => { println!("{e}"); panic!("Failed to insert images into database!") }
         };
 
-        assert_eq!(out_a, 36);
+        assert_eq!(out_a, 36);  // inserted images into db
 
         let batch_b = (1..10)
             .map(|listing_id| (1..5).map(move |id| {
@@ -116,13 +116,13 @@ fn test_upsert_listing_images() {
                 Err(e) => { println!("{e}"); panic!("Failed to insert images into database!") }
             };
     
-        assert_eq!(out_b, 0);
+        assert_eq!(out_b, 0);   // fail due to colliding id 
 
         let batch_c = (1..10)
         .map(|listing_id| (1..5).map(move |id| {
-            let nid = (listing_id-1)*4 + id;
+            let nid = 36 + (listing_id-1)*4 + id;
             let url = "https://some_new_image_url.jpeg".to_string();
-            make_new_listing_img(nid, listing_id, Some(url), Some(id.try_into().unwrap()))
+            make_new_listing_img(nid, 5, Some(url), Some(id.try_into().unwrap()))
         }))
         .flatten()
         .collect::<Vec<NewListingImage>>();
@@ -132,6 +132,39 @@ fn test_upsert_listing_images() {
             Err(e) => { println!("{e}"); panic!("Failed to insert images into database!") }
         };
 
-        assert_eq!(out_c, 36);
+        assert_eq!(out_c, 0);   // fail due to non-existing listing id
+
+        let batch_d = (1..10)
+        .map(|listing_id| (1..5).map(move |id| {
+            let nid = 36 + (listing_id-1)*4 + id;
+            let url = "https://some_new_image_url.jpeg".to_string();
+            make_new_listing_img(nid, listing_id, Some(url), Some(id.try_into().unwrap()))
+        }))
+        .flatten()
+        .collect::<Vec<NewListingImage>>();
+
+        let out_d = match upsert_listing_images(batch_d) {
+            Ok(v) => v,
+            Err(e) => { println!("{e}"); panic!("Failed to insert images into database!") }
+        };
+
+        assert_eq!(out_d, 0);   // fail due to non-unique listing_id + priority pair
+
+        let batch_e = (1..10)
+        .map(|listing_id| (1..5).map(move |id| {
+            let p = id+5;
+            let nid = 36 + (listing_id-1)*4 + id;
+            let url = "https://some_new_image_url.jpeg".to_string();
+            make_new_listing_img(nid, listing_id, Some(url), Some(p.try_into().unwrap()))
+        }))
+        .flatten()
+        .collect::<Vec<NewListingImage>>();
+
+        let out_e = match upsert_listing_images(batch_e) {
+            Ok(v) => v,
+            Err(e) => { println!("{e}"); panic!("Failed to insert images into database!") }
+        };
+
+        assert_eq!(out_e, 36);   // should successfully insert
     })
 }

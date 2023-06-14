@@ -5,6 +5,9 @@ pub mod reviews;
 pub mod listings;
 pub mod posts;
 pub mod videos;
+pub mod contact;
+pub mod buyers;
+pub mod sellers;
 
 use std::env;
 use dotenvy::dotenv;
@@ -57,13 +60,6 @@ pub fn upsert_listing_images(listing_images: Vec<NewListingImage>) -> QueryResul
 
     diesel::insert_into(table)
         .values(&listing_images)
-        .on_conflict(id)
-        .do_update()
-        .set((
-            url.eq(excluded(url)),
-            priority.eq(excluded(priority)),
-            tag.eq(excluded(tag)),
-        ))
-        .filter(url.ne(excluded(url)))
+        .on_conflict_do_nothing()
         .execute(connection)
 }

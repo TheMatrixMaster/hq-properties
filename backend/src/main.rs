@@ -8,7 +8,7 @@ use rocket::{get, routes, Build, Rocket};
 use rocket_cors::{AllowedHeaders, AllowedOrigins};
 
 use rocket::fs::{ FileServer, relative };
-use backend_api::{ DbConn, reviews, listings, posts, videos };
+use backend_api::{ DbConn, reviews, listings, posts, videos, contact, buyers, sellers };
 
 #[get("/")]
 fn index() -> &'static str {
@@ -20,16 +20,13 @@ fn make_rocket() -> Rocket<Build> {
         .attach(DbConn::fairing())
         .mount("/", FileServer::from(relative!("static")))
         .mount("/", routes![index])
-        .mount("/reviews", routes![
-            reviews::get,
-            reviews::get_all,
-            reviews::new,
-            reviews::publish,
-            reviews::destroy
-        ])
+        .mount("/reviews", routes![reviews::get, reviews::get_all, reviews::new, reviews::publish, reviews::destroy])
         .mount("/listings", routes![listings::get, listings::get_all])
         .mount("/posts", routes![posts::get, posts::get_all, posts::new, posts::destroy])
         .mount("/videos", routes![videos::get, videos::get_all, videos::new, videos::destroy])
+        .mount("/contact", routes![contact::get, contact::get_all, contact::new, contact::destroy])
+        .mount("/buyers", routes![buyers::get, buyers::get_all, buyers::new, buyers::destroy])
+        .mount("/sellers", routes![sellers::get, sellers::get_all, sellers::new, sellers::destroy])
 }
 
 #[rocket::main]

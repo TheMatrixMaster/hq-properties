@@ -2,6 +2,7 @@ NAME=hq-properties
 VERSION=$(shell git rev-parse HEAD)
 SEMVER_VERSION=$(shell grep version Cargo.toml | awk -F"\"" '{print $$2}' | head -n 1)
 REPO=thematrixmaster
+WATCH_DIR=~/Desktop/test
 SHELL := /bin/bash
 
 has_secrets:
@@ -49,8 +50,11 @@ compose: has_secrets
 	docker-compose up -d web
 	docker-compose logs web
 
-run: has_secrets has_postgres
+run_api: has_secrets has_postgres
 	cargo run --bin backend_api
+
+run_fw: has_secrets has_postgres
+	cargo run --bin filewatcher ${WATCH_DIR}
 
 compile:
 	docker run --rm \

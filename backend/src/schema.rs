@@ -7,6 +7,22 @@ pub mod sql_types {
 }
 
 diesel::table! {
+    buyers (id) {
+        id -> Int4,
+        first_name -> Varchar,
+        last_name -> Varchar,
+        email -> Varchar,
+        phone -> Nullable<Varchar>,
+        buy_period -> Varchar,
+        home_type -> Varchar,
+        bedrooms -> Varchar,
+        location -> Varchar,
+        other -> Nullable<Text>,
+        created_at -> Timestamp,
+    }
+}
+
+diesel::table! {
     contact_messages (id) {
         id -> Int4,
         name -> Varchar,
@@ -71,6 +87,22 @@ diesel::table! {
 }
 
 diesel::table! {
+    sellers (id) {
+        id -> Int4,
+        first_name -> Varchar,
+        last_name -> Varchar,
+        email -> Varchar,
+        phone -> Nullable<Varchar>,
+        address -> Varchar,
+        postal_code -> Nullable<Varchar>,
+        city -> Varchar,
+        sell_period -> Varchar,
+        other -> Nullable<Text>,
+        created_at -> Timestamp,
+    }
+}
+
+diesel::table! {
     videos (id) {
         id -> Int4,
         video_url -> Text,
@@ -83,10 +115,12 @@ diesel::table! {
 diesel::joinable!(listing_images -> listings (listing_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
+    buyers,
     contact_messages,
     listing_images,
     listings,
     posts,
     reviews,
+    sellers,
     videos,
 );
