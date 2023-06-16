@@ -9,7 +9,7 @@
 		"Thank you for downloading our seller's guide! We have sent it to the email address you provided.";
 	// const ERROR_MSG: string = 'Form input is invalid, please try again.';
 
-	let _alert: { msg: string; mode: 'success' | 'danger' } | null = null;
+	let alert: { msg: string; mode: 'success' | 'danger' } | null = null;
 
 	const onSubmit = (e: any) => {
 		const formData = new FormData(e.target);
@@ -29,10 +29,10 @@
 			body: JSON.stringify(body)
 		})
 			.then((resp) => resp.json())
-			.then((_) => (_alert = { msg: SUCCESS_MSG, mode: 'success' }))
+			.then((_) => (alert = { msg: SUCCESS_MSG, mode: 'success' }))
 			.catch((err) => {
 				console.error(err);
-				_alert = { msg: err, mode: 'danger' };
+				alert = { msg: err, mode: 'danger' };
 			});
 	};
 </script>

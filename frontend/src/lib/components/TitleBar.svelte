@@ -6,7 +6,7 @@
 		onPress: () => void;
 	};
 
-	export let title = 'Some Title';
+	export let title: string = 'Some Title';
 	export let action: Action | undefined = undefined;
 </script>
 

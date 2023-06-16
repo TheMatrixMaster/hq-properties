@@ -1,7 +1,7 @@
 <script lang="ts">
-	export let msg = '';
+	export let msg: string = '';
 	export let mode: 'success' | 'danger' = 'success';
-	export let visible = false;
+	export let visible: boolean = false;
 	$: display = visible ? 'unset' : 'hidden';
 </script>
 

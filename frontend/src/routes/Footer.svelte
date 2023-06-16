@@ -18,7 +18,7 @@
 		'Thank you very much! We have received your message and will reply shortly.';
 	const ERROR_MSG: string = 'Form input is invalid, please try again.';
 
-	let _alert: { msg: string; mode: 'success' | 'danger' } | null = null;
+	let alert: { msg: string; mode: 'success' | 'danger' } | null = null;
 
 	const isRequiredFieldValid = (val: any) => val != null && val !== '';
 
@@ -35,7 +35,7 @@
 		}
 
 		if (!isValid) {
-			_alert = { msg: ERROR_MSG, mode: 'danger' };
+			alert = { msg: ERROR_MSG, mode: 'danger' };
 			console.error(ERROR_MSG);
 			return;
 		}
@@ -49,10 +49,10 @@
 			body: JSON.stringify(body)
 		})
 			.then((resp) => resp.json())
-			.then((_) => (_alert = { msg: SUCCESS_MSG, mode: 'success' }))
+			.then((_) => (alert = { msg: SUCCESS_MSG, mode: 'success' }))
 			.catch((err) => {
 				console.error(err);
-				_alert = { msg: err, mode: 'danger' };
+				alert = { msg: err, mode: 'danger' };
 			});
 	};
 </script>
