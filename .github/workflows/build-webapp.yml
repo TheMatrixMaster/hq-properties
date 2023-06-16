@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v3
+
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v2
 
@@ -29,7 +31,7 @@ jobs:
       - name: Build and push webapp image
         uses: docker/build-push-action@v4
         with:
-          context: "{{defaultContext}}:frontend"
+          context: "./frontend"
           file: Dockerfile.prod
           platforms: linux/amd64,linux/arm64
           push: true
