@@ -21,9 +21,9 @@ jobs:
 
       - name: Create .env file
         run: |
-          touch .env
-          echo PUBLIC_SERVER_URL="https://api.hqproperties.ca" >> .env
-          cat .env
+          touch frontend/.env
+          echo PUBLIC_SERVER_URL="https://api.hqproperties.ca" >> frontend/.env
+          cat frontend/.env
 
       - name: Build and push webapp image
         uses: docker/build-push-action@v4
