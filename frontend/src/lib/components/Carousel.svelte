@@ -26,8 +26,8 @@
 			threshold: 20,
 			loop: true,
 			rtl: false,
-			onInit: () => {},
-			onChange: () => {}
+			onInit: () => null,
+			onChange: () => null
 		});
 
 		prev = () => {

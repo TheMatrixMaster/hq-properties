@@ -5,11 +5,11 @@
 
 	import { PUBLIC_SERVER_URL } from '$env/static/public';
 
-	const SUCCESS_MSG: string =
+	const SUCCESS_MSG =
 		"Thank you for downloading our buyer's guide! We have sent it to the email address you provided.";
 	// const ERROR_MSG: string = 'Form input is invalid, please try again.';
 
-	let alert: { msg: string; mode: 'success' | 'danger' } | null = null;
+	let _alert: { msg: string; mode: 'success' | 'danger' } | null = null;
 
 	const onSubmit = (e: any) => {
 		const formData = new FormData(e.target);
@@ -29,10 +29,10 @@
 			body: JSON.stringify(body)
 		})
 			.then((resp) => resp.json())
-			.then((_) => (alert = { msg: SUCCESS_MSG, mode: 'success' }))
+			.then((_) => (_alert = { msg: SUCCESS_MSG, mode: 'success' }))
 			.catch((err) => {
 				console.error(err);
-				alert = { msg: err, mode: 'danger' };
+				_alert = { msg: err, mode: 'danger' };
 			});
 	};
 </script>

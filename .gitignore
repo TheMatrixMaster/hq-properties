@@ -17,6 +17,9 @@ env.sh
 .vscode/
 .DS_Store
 aws/
+deployments/
+
 diesel-demo/
 svelte-demo-app/
 rust-docker-demo/
+sveltekit-docker-nginx/
