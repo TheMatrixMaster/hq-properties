@@ -5,7 +5,7 @@
 	import { PUBLIC_SERVER_URL } from '$env/static/public';
 
 	const isRequiredFieldValid = (val: any) => val != null && val !== '';
-	const parseFormData = (key: string, val: FormDataEntryValue) => {
+	const parseFormData = (key: string, val: File | string) => {
 		if (key === 'anonymous') return Boolean(val);
 		else return val;
 	};
@@ -13,7 +13,7 @@
 	const SUCCESS_MSG: string =
 		'Thank you very much! We have received your testimonial and will be publishing it shortly.';
 	const ERROR_MSG: string = 'Form input is invalid, please try again.';
-	let alert: { msg: string; mode: 'success' | 'danger' } | null = null;
+	let _alert: { msg: string; mode: 'success' | 'danger' } | null = null;
 
 	const onSubmit = (e: any) => {
 		const formData = new FormData(e.target);
@@ -28,7 +28,7 @@
 		}
 
 		if (!isValid) {
-			alert = { msg: ERROR_MSG, mode: 'danger' };
+			_alert = { msg: ERROR_MSG, mode: 'danger' };
 			console.error(ERROR_MSG);
 			return;
 		}
@@ -42,10 +42,10 @@
 			body: JSON.stringify(body)
 		})
 			.then((resp) => resp.json())
-			.then((_) => (alert = { msg: SUCCESS_MSG, mode: 'success' }))
+			.then((_) => (_alert = { msg: SUCCESS_MSG, mode: 'success' }))
 			.catch((err) => {
 				console.error(err);
-				alert = { msg: err, mode: 'danger' };
+				_alert = { msg: err, mode: 'danger' };
 			});
 	};
 </script>

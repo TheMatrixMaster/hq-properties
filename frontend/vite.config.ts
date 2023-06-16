@@ -1,7 +1,7 @@
 import { sveltekit } from '@sveltejs/kit/vite';
 import fs from 'fs';
 
-let httpsConfig =
+const httpsConfig =
 	process.env.NODE_ENV === 'development'
 		? {
 				key: fs.readFileSync('./nginx/dev/local.key.pem'),
