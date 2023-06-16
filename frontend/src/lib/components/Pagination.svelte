@@ -30,7 +30,7 @@
 	</div>
 </div>
 
-<style>
+<style lang="scss">
 	div.main-container {
 		display: flex;
 		gap: 0.5rem;

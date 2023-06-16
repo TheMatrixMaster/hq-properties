@@ -1,5 +1,5 @@
 <script>
-	import './styles.css';
+	import './styles.scss';
 	import TitleBar from '$lib/components/TitleBar.svelte';
 </script>
 
@@ -8,7 +8,7 @@
 	<TitleBar title="Posts" />
 </section>
 
-<style>
+<style lang="scss">
 	#media {
 		background: var(--color-bg-0);
 	}

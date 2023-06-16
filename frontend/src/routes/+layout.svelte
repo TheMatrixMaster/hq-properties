@@ -1,5 +1,5 @@
 <script>
-	import './styles.css';
+	import './styles.scss';
 	import Footer from './Footer.svelte';
 </script>
 
@@ -10,7 +10,7 @@
 	<Footer />
 </div>
 
-<style>
+<style lang="scss">
 	.app {
 		display: flex;
 		flex-direction: column;

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import './styles.css';
+	import './styles.scss';
 	import BuyImg from '$lib/images/buy.jpeg';
 	import TitleBar from '$lib/components/TitleBar.svelte';
 

@@ -20,7 +20,7 @@
 	{/if}
 </div>
 
-<style>
+<style lang="scss">
 	div {
 		display: flex;
 		grid-column: 1/13;

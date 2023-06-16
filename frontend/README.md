@@ -1,28 +1,25 @@
-# create-svelte
+# hq-properties webapp
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
-
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
-
-```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+Web application for hqproperties.ca written in sveltekit
 
 ## Developing
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), create a private key and certificate using `mkcert`
 
 ```bash
-npm run dev
+mkcert -install -key-file local.key.pem -cert-file local.cert.pem localhost foo.local
+```
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+Then move the created files to `nginx/dev/local.cert.pem` & `nginx/dev/local.key.pem`.
+On Mac OS, add the keys to the system keychains in Keychain Access.
+
+Finally, start a development server using docker compose or pnpm dev
+
+```bash
+docker compose -f docker-compose.dev.yml up
+
+# or
+pnpm dev
 ```
 
 ## Building
@@ -30,9 +27,7 @@ npm run dev -- --open
 To create a production version of your app:
 
 ```bash
-npm run build
+pnpm build
 ```
 
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+You can preview the production build with `pnpm preview`.

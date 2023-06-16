@@ -75,7 +75,7 @@
 	</nav>
 </header>
 
-<style>
+<style lang="scss">
 	header {
 		top: 0;
 		display: flex;

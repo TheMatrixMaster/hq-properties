@@ -58,7 +58,7 @@
 	</div>
 </a>
 
-<style>
+<style lang="scss">
 	a {
 		color: var(--color-text);
 		text-decoration: none;

@@ -1,6 +1,8 @@
 FROM node:18.9-alpine
 
 ENV NODE_ENV development
+ENV USE_POLLING false
+ENV CHOKIDAR_USEPOLLING ${USE_POLLING}
 
 RUN npm install -g pnpm
 

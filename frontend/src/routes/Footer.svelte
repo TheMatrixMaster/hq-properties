@@ -152,7 +152,7 @@
 	</div>
 </footer>
 
-<style>
+<style lang="scss">
 	footer {
 		display: grid;
 		min-height: 100vh;

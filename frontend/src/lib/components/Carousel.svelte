@@ -59,19 +59,11 @@
 	</button>
 </div>
 
-<style>
+<style lang="scss">
 	.layout {
 		display: grid;
 		flex-grow: 1;
 		margin: 0 -1rem;
-		& > div {
-			display: flex;
-			& > div {
-				display: flex;
-				flex-direction: column;
-				justify-content: center;
-			}
-		}
 	}
 	.siema-control {
 		display: flex;

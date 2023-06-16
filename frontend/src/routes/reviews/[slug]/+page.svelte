@@ -42,7 +42,7 @@
 	<Pagination size={data.size} limit={LIMIT} {offset} onPress={changePage} />
 </section>
 
-<style>
+<style lang="scss">
 	section {
 		grid-template-rows: fit-content(100%) fit-content(100%) auto fit-content(100%);
 		grid-template-columns: auto;

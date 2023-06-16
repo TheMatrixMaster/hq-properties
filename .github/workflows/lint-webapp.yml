@@ -27,6 +27,7 @@ jobs:
           version: '8.x'
 
       - run: pnpm install --silent
+      - run: pnpm check
       - run: pnpm lint
       - run: pnpm check-format
   

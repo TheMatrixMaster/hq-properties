@@ -3,6 +3,8 @@ FROM node:18.9-alpine
 RUN npm install -g pnpm
 
 ENV NODE_ENV development
+ENV USE_POLLING false
+ENV CHOKIDAR_USEPOLLING ${USE_POLLING}
 
 WORKDIR /usr/src/app
 

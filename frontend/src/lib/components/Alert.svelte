@@ -9,7 +9,7 @@
 	<p><strong>{mode} alert!</strong> {msg}</p>
 </div>
 
-<style>
+<style lang="scss">
 	div.main-container {
 		position: absolute;
 		right: 3rem;

@@ -1,5 +1,5 @@
 <script>
-	import './styles.css';
+	import './styles.scss';
 	import { goto } from '$app/navigation';
 	import ArrowRight from '$lib/images/arrow-right.svg';
 	import RLLogo from '$lib/images/royal-lepage.svg';
@@ -25,7 +25,7 @@
 	</div>
 </section>
 
-<style>
+<style lang="scss">
 	#intro {
 		min-height: calc(100vh - var(--header-height));
 		grid-template-rows: auto fit-content(100%);

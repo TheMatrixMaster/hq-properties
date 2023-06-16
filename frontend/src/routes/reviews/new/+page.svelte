@@ -97,7 +97,7 @@
 	</form>
 </section>
 
-<style>
+<style lang="scss">
 	section {
 		flex-grow: 1;
 		min-height: unset;

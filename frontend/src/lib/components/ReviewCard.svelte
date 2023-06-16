@@ -37,7 +37,7 @@
 	</div>
 {/if}
 
-<style>
+<style lang="scss">
 	div.base-card {
 		height: 100%;
 		max-width: 100%;

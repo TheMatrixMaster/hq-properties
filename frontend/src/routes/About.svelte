@@ -1,5 +1,5 @@
 <script>
-	import './styles.css';
+	import './styles.scss';
 	import profile from '$lib/images/ma.jpeg';
 	import PhoneIcon from '$lib/images/phone.svg';
 	import EmailIcon from '$lib/images/email.svg';
@@ -33,7 +33,7 @@
 	</div>
 </section>
 
-<style>
+<style lang="scss">
 	#aboutme {
 		gap: 4rem;
 		background: var(--color-bg-0);

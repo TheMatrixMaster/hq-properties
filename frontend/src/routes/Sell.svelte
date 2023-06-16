@@ -1,5 +1,5 @@
 <script lang="ts">
-	import './styles.css';
+	import './styles.scss';
 	import SellImg from '$lib/images/sell.jpeg';
 	import TitleBar from '$lib/components/TitleBar.svelte';
 
@@ -99,7 +99,7 @@
 	</div>
 </section>
 
-<style>
+<style lang="scss">
 	.left-col > img {
 		width: auto;
 		max-height: 18rem;
