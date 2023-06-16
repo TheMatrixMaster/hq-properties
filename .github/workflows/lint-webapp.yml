@@ -26,6 +26,19 @@ jobs:
         with:
           version: '8.x'
 
+      - name: Create .env file
+        working-directory: frontend
+        run: |
+          touch .env
+          echo PUBLIC_SERVER_URL="https://api.hqproperties.ca" >> .env
+          cat .env
+
+      - name: Create dummy nginx key and cert
+        working-directory: frontend/nginx/dev
+        run: |
+          touch local.cert.pem
+          touch local.key.pem
+
       - run: pnpm install --silent
       - run: pnpm check
       - run: pnpm lint
