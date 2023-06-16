@@ -20,10 +20,11 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Create .env file
+        working-directory: frontend
         run: |
-          touch frontend/.env
-          echo PUBLIC_SERVER_URL="https://api.hqproperties.ca" >> frontend/.env
-          cat frontend/.env
+          touch .env
+          echo PUBLIC_SERVER_URL="https://api.hqproperties.ca" >> .env
+          cat .env
 
       - name: Build and push webapp image
         uses: docker/build-push-action@v4
