@@ -1,4 +1,4 @@
-version: '3'
+version: '1'
 
 services:
   db:
@@ -16,9 +16,9 @@ services:
     restart: on-failure
     depends_on:
       - db
-    build:
-      dockerfile: Dockerfile.prod
+    build: 
       context: .
+      dockerfile: Dockerfile.dev
       args:
         BINARY: backend_api
     environment:
@@ -27,15 +27,14 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - cargo:/home/rust/.cargo
-      - target:/home/rust/src/target
+      - cargo-cache:/root/.cargo
 
   filewatcher:
     restart: on-failure
     depends_on:
       - db
     build:
-      dockerfile: Dockerfile.prod
+      dockerfile: Dockerfile.dev
       context: .
       args:
         BINARY: filewatcher
@@ -44,10 +43,11 @@ services:
       DATABASE_URL: "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db/${POSTGRES_DB}"
     ports:
       - "8001:8001"
+    volumes:
+      - .watchdir:/home/.watchdir
 
 volumes:
-  cargo: {}
-  target: {}
+  cargo-cache: {}
 
 secrets:
   POSTGRES_PASSWORD:

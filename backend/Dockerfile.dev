@@ -1,0 +1,29 @@
+FROM rustlang/rust:nightly-alpine
+
+RUN apk update
+RUN apk add libpq postgresql-dev
+RUN apk add musl-dev pkgconfig
+RUN apk add openssl-dev gcc
+
+# RUN USER=root cargo new --bin /home/api --name api
+
+WORKDIR /home/api
+
+COPY Cargo.toml Cargo.lock ./
+RUN echo "fn main() {}" > src/main.rs
+
+RUN cargo test
+RUN cargo build --release
+
+RUN rm src/main.rs
+ADD . ./
+
+ARG BINARY
+RUN rm ./target/release/deps/${BINARY}*
+
+RUN cargo test
+RUN cargo build --release --bin ${BINARY}
+
+EXPOSE 8000
+
+CMD [ "./target/release/${BINARY}" ]

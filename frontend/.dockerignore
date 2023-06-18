@@ -2,7 +2,8 @@ node_modules
 npm-debug.log
 
 .dockerignore
-Dockerfile
+Dockerfile.dev
+Dockerfile.prod
 
 .vscode
 .git

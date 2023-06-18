@@ -1,0 +1,11 @@
+target
+
+.dockerignore
+Dockerfile.dev
+Dockerfile.prod
+
+.vscode
+.git
+.gitattributes
+
+README.md
