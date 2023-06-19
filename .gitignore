@@ -18,6 +18,7 @@ env.sh
 .DS_Store
 aws/
 deployments/
+backend/.watchdir/*
 
 diesel-demo/
 svelte-demo-app/

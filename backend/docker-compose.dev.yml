@@ -2,49 +2,60 @@ version: '1'
 
 services:
   db:
+    container_name: postgres
+    image: postgres:15.3-alpine
     environment:
-      POSTGRES_DB: "${POSTGRES_DB}"
-      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_DB: ma_p_site
+      POSTGRES_USER: ma_p_site
+      POSTGRES_HOST: postgres
       POSTGRES_PASSWORD_FILE: /run/secrets/POSTGRES_PASSWORD
     secrets:
       - POSTGRES_PASSWORD
-    image: postgres:15.3-alpine
     ports:
       - "5432:5432"
-      
-  api:
-    restart: on-failure
-    depends_on:
-      - db
-    build: 
-      context: .
-      dockerfile: Dockerfile.dev
-      args:
-        BINARY: backend_api
-    environment:
-      ROCKET_ENV: development
-      DATABASE_URL: "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db/${POSTGRES_DB}"
-    ports:
-      - "8000:8000"
-    volumes:
-      - cargo-cache:/root/.cargo
 
   filewatcher:
     restart: on-failure
     depends_on:
       - db
     build:
-      dockerfile: Dockerfile.dev
       context: .
+      dockerfile: Dockerfile.dev
       args:
         BINARY: filewatcher
     environment:
+      POSTGRES_DB: ma_p_site
+      POSTGRES_USER: ma_p_site
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
       ROCKET_ENV: development
-      DATABASE_URL: "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db/${POSTGRES_DB}"
-    ports:
-      - "8001:8001"
+      ROCKET_ADDRESS: 0.0.0.0
     volumes:
       - .watchdir:/home/.watchdir
+
+  api:
+    restart: on-failure
+    depends_on:
+      - db
+      - filewatcher
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      args:
+        BINARY: backend_api
+    environment:
+      POSTGRES_DB: ma_p_site
+      POSTGRES_USER: ma_p_site
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      ROCKET_ENV: development
+      ROCKET_ADDRESS: 0.0.0.0
+    secrets:
+      - POSTGRES_PASSWORD
+    ports:
+      - "8000:8000"
+    volumes:
+      - cargo-cache:/root/.cargo
 
 volumes:
   cargo-cache: {}
