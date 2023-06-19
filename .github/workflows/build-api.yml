@@ -3,7 +3,6 @@ run-name: ${{ github.actor }} is building api container images
 on:
   push:
     branches:
-      - test-api
       - develop
 
 jobs:
