@@ -31,6 +31,8 @@ services:
       POSTGRES_PORT: 5432
       ROCKET_ENV: development
       ROCKET_ADDRESS: 0.0.0.0
+    secrets:
+      - POSTGRES_PASSWORD
     volumes:
       - .watchdir:/home/.watchdir
 
