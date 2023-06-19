@@ -34,7 +34,7 @@ jobs:
           cat .env
 
       - name: Create dummy nginx key and cert
-        working-directory: frontend/nginx/dev
+        working-directory: frontend/nginx
         run: |
           touch local.cert.pem
           touch local.key.pem

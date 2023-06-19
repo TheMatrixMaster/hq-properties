@@ -4,8 +4,8 @@ import fs from 'fs';
 const httpsConfig =
 	process.env.NODE_ENV === 'development'
 		? {
-				key: fs.readFileSync('./nginx/dev/local.key.pem'),
-				cert: fs.readFileSync('./nginx/dev/local.cert.pem')
+				key: fs.readFileSync('./nginx/local.key.pem'),
+				cert: fs.readFileSync('./nginx/local.cert.pem')
 		  }
 		: false;
 

@@ -53,7 +53,8 @@ jobs:
       - name: Build and push nginx image
         uses: docker/build-push-action@v4
         with:
-          context: "{{defaultContext}}:frontend/nginx/prod"
+          context: ./nginx
+          file: ./nginx/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/hq-nginx:latest
