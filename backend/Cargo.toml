@@ -22,7 +22,7 @@ rocket_cors = { git = "https://github.com/lawliet89/rocket_cors", branch = "mast
 notify = { version = "6.0.0", features = ["serde"] }
 zip = { version = "0.6.6" }
 csv = "1.2.2"
-reqwest = { version = "0.11", default-features = false, features = ["blocking", "json"] }
+reqwest = { version = "0.11", features = ["blocking", "json"] }
 openssl = "*"
 
 [dev-dependencies]

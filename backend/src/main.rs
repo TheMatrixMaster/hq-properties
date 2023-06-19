@@ -1,4 +1,7 @@
+extern crate openssl;
+
 #[macro_use]
+extern crate diesel;
 extern crate rocket;
 extern crate rocket_cors;
 
