@@ -48,7 +48,7 @@ services:
       POSTGRES_USER: ma_p_site
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
-      ROCKET_ENV: development
+      ROCKET_ENV: release
       ROCKET_ADDRESS: 0.0.0.0
     secrets:
       - POSTGRES_PASSWORD

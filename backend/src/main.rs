@@ -36,6 +36,8 @@ fn make_rocket() -> Rocket<Build> {
 async fn main() -> Result<(), Box<dyn Error>> {
     let allowed_origins = AllowedOrigins::some_exact(&[
         "http://localhost:5173",
+        "https://hqproperties.ca",
+        "https://www.hqproperties.ca"
     ]);
 
     let cors = rocket_cors::CorsOptions {
