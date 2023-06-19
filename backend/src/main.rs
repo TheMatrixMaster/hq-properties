@@ -7,15 +7,27 @@ extern crate rocket_cors;
 
 use std::error::Error;
 use rocket::http::Method;
+use rocket::fairing::AdHoc;
+use rocket::fs::{ FileServer, relative };
 use rocket::{get, routes, Build, Rocket};
 use rocket_cors::{AllowedHeaders, AllowedOrigins};
 
-use rocket::fs::{ FileServer, relative };
-use backend_api::{ DbConn, reviews, listings, posts, videos, contact, buyers, sellers };
+use diesel::pg::Pg;
+use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
+use backend_api::{ DbConn, establish_connection, reviews, listings, posts, videos, contact, buyers, sellers };
+
+pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!(); 
 
 #[get("/")]
 fn index() -> &'static str {
     "Hello, world!"
+}
+
+fn run_migrations(connection: &mut impl MigrationHarness<Pg>) -> Result<(), Box<dyn Error + Send + Sync + 'static>> {
+    // This will run the necessary migrations.
+    connection.run_pending_migrations(MIGRATIONS)?;
+
+    Ok(())
 }
 
 fn make_rocket() -> Rocket<Build> {
@@ -34,6 +46,10 @@ fn make_rocket() -> Rocket<Build> {
 
 #[rocket::main]
 async fn main() -> Result<(), Box<dyn Error>> {
+
+    let connection = &mut establish_connection();
+    let _ = run_migrations(connection);
+
     let allowed_origins = AllowedOrigins::some_exact(&[
         "http://localhost:5173",
         "https://hqproperties.ca",
