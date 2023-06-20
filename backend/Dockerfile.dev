@@ -12,7 +12,7 @@ RUN mkdir src
 RUN echo "fn main() {}" > src/main.rs
 
 # Install diesel-cli for database migrations
-# RUN cargo install diesel_cli --no-default-features --features postgres
+RUN cargo install diesel_cli --no-default-features --features postgres
 
 # Build the dependencies
 RUN cargo build --release

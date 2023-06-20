@@ -42,6 +42,7 @@ ENV SERVER=${BINARY}
 WORKDIR /home/api
 
 COPY --from=api-builder /home/api/static/ /home/api/static/
+COPY --from=api-builder /home/api/Rocket.toml /home/api/
 COPY --from=api-builder /home/api/entrypoint.sh /home/api/
 
 COPY --from=api-builder \
