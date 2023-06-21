@@ -10,7 +10,11 @@ RUN cargo chef prepare --recipe-path recipe.json
 FROM ${BASE_IMAGE} AS api-cacher
 RUN cargo install cargo-chef
 COPY --from=api-planner /volume/recipe.json recipe.json
-RUN cargo chef cook --release --target x86_64-unknown-linux-musl --recipe-path recipe.json
+RUN cargo chef cook \
+    --release \
+    --all-features \
+    --target x86_64-unknown-linux-musl \
+    --recipe-path recipe.json
 
 # Our first FROM statement declares the build environment.
 FROM ${BASE_IMAGE} AS api-builder
@@ -24,12 +28,16 @@ COPY --from=api-cacher /root/.cargo /root/.cargo
 # Build our application.
 ARG BINARY
 ENV SERVER=${BINARY}
-RUN cargo build --release --target x86_64-unknown-linux-musl --bin ${BINARY}
+RUN cargo build \
+    --release \
+    --target x86_64-unknown-linux-musl \
+    --features build-${BINARY} \
+    --bin ${BINARY}
 
 # Strip binary for size optimization
 RUN strip target/x86_64-unknown-linux-musl/release/${BINARY}
 
-# Now, we need to build our _real_ Docker container, copying in `backend_api`.
+# Now, we need to build our _real_ Docker container, copying in `${BINARY}` binary.
 FROM alpine:latest
 
 RUN apk update

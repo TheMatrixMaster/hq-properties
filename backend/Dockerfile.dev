@@ -12,7 +12,7 @@ RUN mkdir src
 RUN echo "fn main() {}" > src/main.rs
 
 # Build the dependencies
-RUN cargo build --release
+RUN cargo build --release --features build-${BINARY}
 
 # Add our source code
 ADD --chown=rust:rust . ./
@@ -20,10 +20,10 @@ RUN touch src/main.rs
 
 ARG BINARY
 ENV SERVER=${BINARY}
-RUN rm ./target/release/deps/backend_api*
+RUN rm ./target/release/deps/api*
 
 # Build the release binary
-RUN cargo build --release --bin ${BINARY}
+RUN cargo build --features build-${BINARY} --release --bin ${BINARY}
 
 # Strip binary for size optimization
 RUN strip ./target/release/${BINARY}

@@ -7,7 +7,7 @@ extern crate rocket_cors;
 
 use std::error::Error;
 use rocket::http::Method;
-use rocket::fairing::AdHoc;
+
 use rocket::fs::{ FileServer, relative };
 use rocket::{get, routes, Build, Rocket};
 use rocket_cors::{AllowedHeaders, AllowedOrigins};

@@ -27,61 +27,15 @@ reset_db: has_secrets has_postgres
 	@echo "Clearing the postgres database"
 	diesel database reset
 
-stop:
-	@docker ps -aq | xargs -r docker rm -f
-	@pkill backend_api || true
-
 setup:
 	cargo install diesel_cli --no-default-features --features postgres
 	rustup override set $$(cat .rustup)
 
 test: has_secrets has_postgres
-	cargo test --bin backend_api
-	
-compose: has_secrets
-	docker-compose up -d db
-	@echo "Waiting for postgres"
-	if hash psql 2> /dev/null; then \
-		until [[ $$RETRIES -ge 10 ]] || PGPASSWORD=$${POSTGRES_PASSWORD} psql -h $${POSTGRES_DB_URL} -U $$POSTGRES_USER -d $${POSTGRES_DB} -c "select 1" > /dev/null ; do \
-			echo "$$((RETRIES++))"; \
-			sleep 1; \
-		done \
-	else \
-	  sleep 10 ;\
-	fi
-	docker-compose up -d web
-	docker-compose logs web
+	cargo test --features build-api --bin api
 
 run_api: has_secrets has_postgres
-	cargo run --bin backend_api
+	cargo run --features build-api --bin api
 
 run_fw: has_secrets has_postgres
-	cargo run --bin filewatcher ${WATCH_DIR}
-
-compile:
-	docker run --rm \
-		-v cargo-cache:/root/.cargo \
-		-v $$PWD:/volume \
-		-w /volume \
-		-it clux/muslrust:nightly \
-		cargo build --bin backend_api --release
-	sudo chown $$USER:$$USER -R target
-	strip target/x86_64-unknown-linux-musl/release/backend_api
-	mv target/x86_64-unknown-linux-musl/release/backend_api .
-
-build:
-	@echo "Reusing built binary in current directory from make compile"
-	@ls -lah ./backend_api
-	docker build -t $(REPO)/$(NAME):$(VERSION) .
-
-tag-latest: build
-	docker tag $(REPO)/$(NAME):$(VERSION) $(REPO)/$(NAME):latest
-	docker push $(REPO)/$(NAME):latest
-
-tag-semver: build
-	if curl -sSL https://registry.hub.docker.com/v1/repositories/$(REPO)/$(NAME)/tags | jq -r ".[].name" | grep -q $(SEMVER_VERSION); then \
-		echo "Tag $(SEMVER_VERSION) already exists - not publishing" ; \
-	else \
-		docker tag $(REPO)/$(NAME):$(VERSION) $(REPO)/$(NAME):$(SEMVER_VERSION) ; \
-		docker push $(REPO)/$(NAME):$(SEMVER_VERSION) ; \
-	fi
+	cargo run --features build-fw --bin fw ${WATCH_DIR}

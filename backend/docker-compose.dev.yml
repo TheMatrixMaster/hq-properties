@@ -23,13 +23,13 @@ services:
       context: .
       dockerfile: Dockerfile.dev
       args:
-        BINARY: filewatcher
+        BINARY: fw
     environment:
       POSTGRES_DB: ma_p_site
       POSTGRES_USER: ma_p_site
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
-      ROCKET_ENV: development
+      ROCKET_ENV: debug
       ROCKET_ADDRESS: 0.0.0.0
     secrets:
       - POSTGRES_PASSWORD
@@ -44,13 +44,13 @@ services:
       context: .
       dockerfile: Dockerfile.dev
       args:
-        BINARY: backend_api
+        BINARY: api
     environment:
       POSTGRES_DB: ma_p_site
       POSTGRES_USER: ma_p_site
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
-      ROCKET_ENV: development
+      ROCKET_ENV: debug
       ROCKET_ADDRESS: 0.0.0.0
     secrets:
       - POSTGRES_PASSWORD
