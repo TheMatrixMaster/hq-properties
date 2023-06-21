@@ -14,7 +14,7 @@ services:
     ports:
       - "5432:5432"
 
-  filewatcher:
+  fw:
     restart: on-failure
     depends_on:
       - db

@@ -292,8 +292,6 @@ fn watch<P: AsRef<Path>>(path: P) -> Result<(), FileWatcherError> {
 
                                 let mut contents = Vec::new();
                                 main_file.read_to_end(&mut contents).unwrap();
-                                // println!("{:?}", String::from_utf8_lossy(&contents));
-                                // println!();
 
                                 data.insert(key, contents);
                             }
@@ -304,6 +302,12 @@ fn watch<P: AsRef<Path>>(path: P) -> Result<(), FileWatcherError> {
                             // Process listings
                             let _ = parse_listings(data.get_mut("listings").unwrap());
                             let _ = parse_listing_images(data.get_mut("photos").unwrap());
+
+                            print!("Deleting zip archive: {:?} after successfull parsing", main_path);
+                            match std::fs::remove_file(main_path).err() {
+                                Some(e) => { println!("{:}", e); continue; },
+                                None => continue,
+                            };
                         },
                         _ => {
                             println!("Deleting unexpected file: {:?}", main_path);
