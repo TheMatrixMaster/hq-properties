@@ -4,9 +4,8 @@ use notify::{RecommendedWatcher, RecursiveMode, Watcher, Config};
 
 use chrono::NaiveDateTime;
 use rocket::serde::{Deserialize};
-use std::{path::Path, ffi::OsStr};
+use std::{path::Path, ffi::OsStr, process::Command};
 use std::collections::HashMap;
-use std::io::prelude::*;
 
 const FILENAMES: [(&'static str, &'static str); 3] = [
     ("UNITES_DETAILLEES.TXT", "index"),
@@ -266,36 +265,31 @@ fn watch<P: AsRef<Path>>(path: P) -> Result<(), FileWatcherError> {
                         (true, true, Some("zip")) => {
                             println!("Processing new data from zip file: {:?}", main_path);
                             
-                            // TODO Now we process the zip file and inform admin if failed to process file
-                            let zipfile = match std::fs::File::open(main_path) {
-                                Ok(v) => v,
-                                Err(e) => { println!("{e}"); continue; }
-                            };
-
-                            let mut archive = match zip::ZipArchive::new(zipfile) {
-                                Ok(v) => v,
-                                Err(e) => { println!("{e}"); continue; }
-                            };
-                            
                             let mut did_fail: bool = false;
                             let mut data: HashMap<&str, Vec<u8>> = HashMap::new();
                             
                             for (file_name, key) in FILENAMES {
-                                let mut main_file = match archive.by_name(file_name) {
-                                    Ok(file) => file,
-                                    Err(..) => {
-                                        println!("{key} file '{file_name}' not found in zip!");
-                                        did_fail = true;
-                                        break;
-                                    }
-                                };
 
-                                let mut contents = Vec::new();
-                                main_file.read_to_end(&mut contents).unwrap();
-                                // println!("{:?}", String::from_utf8_lossy(&contents));
-                                // println!();
-
-                                data.insert(key, contents);
+                                let main_file = match Command::new("unzip")
+                                    .arg("-p")
+                                    .arg(main_path)
+                                    .arg(file_name)
+                                    .output() {
+                                        Ok(v) => v,
+                                        Err(e) => {
+                                            println!("Error: {e}!");
+                                            did_fail = true;
+                                            break;
+                                        }
+                                    };
+                                
+                                if main_file.status.success() {
+                                    data.insert(key, main_file.stdout);
+                                } else {
+                                    println!("Error: {:?}", main_file.stderr);
+                                    did_fail = true;
+                                    break;
+                                }
                             }
                             
                             // TODO notify Stephen that process failed here
@@ -304,6 +298,12 @@ fn watch<P: AsRef<Path>>(path: P) -> Result<(), FileWatcherError> {
                             // Process listings
                             let _ = parse_listings(data.get_mut("listings").unwrap());
                             let _ = parse_listing_images(data.get_mut("photos").unwrap());
+
+                            print!("Deleting zip archive: {:?} after successfull parsing", main_path);
+                            match std::fs::remove_file(main_path).err() {
+                                Some(e) => { println!("{:}", e); continue; },
+                                None => continue,
+                            };
                         },
                         _ => {
                             println!("Deleting unexpected file: {:?}", main_path);

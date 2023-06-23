@@ -1,22 +1,21 @@
 #!/bin/bash
 
-server="${SERVER:-FLASK}"
+server="${SERVER:-api}"
 prevent_auto_migrate="${PREVENT_AUTO_MIGRATE:-false}"
 
-if [[ "$server" == "FILEWATCHER" ]]
+POSTGRES_PASSWORD=$(</run/secrets/POSTGRES_PASSWORD)
+export DATABASE_URL="postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}"
+export ROCKET_DATABASES="{db={url=\"${DATABASE_URL}\"}}"
+
+if [[ "$server" == "fw" ]]
 then
+    rm -rf ./static
+
     # Start the filewatcher at appropriate path
-    $(./target/release/filewatcher)
+    ./target/release/fw /home/.watchdir
 
 else
-    # Run migrations on the database
-    if [ "$prevent_auto_migrate" != true ]
-    then
-        echo ""
-        echo "Auto-running migrations:"
-        diesel migration run
-    fi
-
     # Start the server
-    $(./target/release/backend_api)
+    ./target/release/api
+
 fi
