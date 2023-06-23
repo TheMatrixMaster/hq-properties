@@ -27,7 +27,7 @@ jobs:
         with:
           context: ./backend
           file: ./backend/Dockerfile.prod
-          build-args: BINARY=backend_api
+          build-args: BINARY=api
           cache-from: type=gha
           cache-to: type=gha,mode=max
           push: true
@@ -53,7 +53,7 @@ jobs:
         with:
           context: ./backend
           file: ./backend/Dockerfile.prod
-          build-args: BINARY=filewatcher
+          build-args: BINARY=fw
           cache-from: type=gha
           cache-to: type=gha,mode=max
           push: true
