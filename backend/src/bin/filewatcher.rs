@@ -286,7 +286,7 @@ fn watch<P: AsRef<Path>>(path: P) -> Result<(), FileWatcherError> {
                                 if main_file.status.success() {
                                     data.insert(key, main_file.stdout);
                                 } else {
-                                    println!("Error: {:?}", main_file.stderr);
+                                    println!("Error: {:?}", parse_str(Some(&main_file.stderr)));
                                     did_fail = true;
                                     break;
                                 }
@@ -299,7 +299,8 @@ fn watch<P: AsRef<Path>>(path: P) -> Result<(), FileWatcherError> {
                             let _ = parse_listings(data.get_mut("listings").unwrap());
                             let _ = parse_listing_images(data.get_mut("photos").unwrap());
 
-                            print!("Deleting zip archive: {:?} after successfull parsing", main_path);
+                            println!("Deleting zip archive: {:?} after successfull parsing", main_path);
+                            
                             match std::fs::remove_file(main_path).err() {
                                 Some(e) => { println!("{:}", e); continue; },
                                 None => continue,
