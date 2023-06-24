@@ -2,12 +2,18 @@ node_modules
 npm-debug.log
 
 .dockerignore
+docker-compose.dev.yml
 Dockerfile.dev
 Dockerfile.prod
+
+nginx
+build
+.svelte-kit
 
 .vscode
 .git
 .gitattributes
+.gitignore
 
 .eslintignore
 .eslintrc.cjs
@@ -15,3 +21,4 @@ Dockerfile.prod
 .pretieriignore
 
 README.md
+vite.config.nginx.ts

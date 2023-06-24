@@ -56,16 +56,17 @@ body {
 }
 
 /* global class styles */
-.use-bg-image {
+div.use-bg-image {
+	width: 100vw;
+	height: 100vh;
+	position: fixed;
 	background-size: cover;
-	background-position-y: 40%;
-	background-attachment: fixed;
+	background-repeat: no-repeat;
+
+	z-index: -1;
+	background-position: center;
 	background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.45)),
 		url('$lib/images/bg.jpeg');
-
-	@media (orientation: portrait) {
-		background-position-x: 40%;
-	}
 }
 
 /* Logo styling */
@@ -199,11 +200,11 @@ section {
 	grid-template-columns: repeat(12, 1fr);
 	scroll-margin-top: var(--header-mini-height);
 
-	@media (orientation: portrait) and (aspect-ratio < 9/16) {
+	@media (orientation: portrait) and (aspect-ratio <= 11/18) {
 		min-height: unset;
 		padding: 2rem 3rem;
 	}
-	@media (orientation: portrait) and (aspect-ratio >= 9/16) {
+	@media (orientation: portrait) and (aspect-ratio > 11/18) {
 		min-height: unset;
 		padding: 2rem 5rem;
 	}
@@ -291,7 +292,7 @@ form > div {
 		margin-right: 1.5rem;
 	}
 
-	@media (orientation: portrait) and (aspect-ratio < 9/16) {
+	@media (orientation: portrait) and (aspect-ratio < 11/18) {
 		flex-direction: column;
 		align-items: flex-start;
 	}
@@ -303,7 +304,7 @@ form > div.checkbox-container {
 }
 .half {
 	grid-column: span 1;
-	@media (orientation: portrait) and (aspect-ratio < 9/16) {
+	@media (orientation: portrait) and (aspect-ratio < 11/18) {
 		grid-column: span 2;
 	}
 }
