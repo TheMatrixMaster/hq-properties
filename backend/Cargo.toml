@@ -5,24 +5,51 @@ version = "0.1.0"
 edition = "2018"
 publish = false
 
+[dependencies]
+
+openssl = "*"
+dotenvy = "0.15.0"
+diesel-derive-enum = { version = "2.0.1", features = ["postgres"] }
+diesel = { version = "2.1.0", features = ["postgres", "chrono", "r2d2"] }
+rocket = { version = "0.5.0-rc.3", "features"=["json"] }
+rocket_sync_db_pools = { version = "0.1.0-rc.3", features = ["diesel_postgres_pool"] }
+chrono = { version = "0.4.20", default-features = false, features = ["clock", "std", "serde"] }
+
+csv = { version = "1.2.2", optional = true }
+notify = { version = "6.0.0", features = ["serde"], optional = true }
+reqwest = { version = "0.11", features = ["blocking", "json"], optional = true }
+
+diesel_migrations = { version = "2.1.0", features = ["postgres"], optional = true }
+
+[dependencies.rocket_contrib]
+version = "0.4.10"
+default-features = false
+features = ["json"]
+optional = true
+
+[dependencies.rocket_cors]
+git = "https://github.com/lawliet89/rocket_cors"
+branch = "master"
+optional = true
+
+[lib]
+path = "src/lib.rs"
+
+[features]
+build-api = ["rocket_contrib", "rocket_cors", "diesel_migrations"]
+build-fw = ["csv", "notify", "reqwest"]
+
 [[bin]]
 doc = false
-name = "backend_api"
+name = "api"
 path = "src/main.rs"
+required-features = ["build-api"]
 
-[dependencies]
-chrono = { version = "0.4.20", default-features = false, features = ["clock", "std", "serde"] }
-diesel = { version = "2.1.0", features = ["postgres", "chrono", "r2d2"] }
-dotenvy = "0.15.0"
-rocket = { version = "0.5.0-rc.3", "features"=["json"] }
-rocket_contrib = { version = "0.4.10", default-features = false, features = ["json"] }
-rocket_sync_db_pools = { version = "0.1.0-rc.3", features = ["diesel_postgres_pool"] }
-diesel-derive-enum = { version = "2.0.1", features = ["postgres"] }
-rocket_cors = { git = "https://github.com/lawliet89/rocket_cors", branch = "master" }
-notify = { version = "6.0.0", features = ["serde"] }
-zip = { version = "0.6.6" }
-csv = "1.2.2"
-reqwest = { version = "0.11", features = ["blocking", "json"] }
+[[bin]]
+doc = false
+name = "fw"
+path = "src/bin/filewatcher.rs"
+required-features = ["build-fw"]
 
 [dev-dependencies]
 parking_lot = "0.12.1"

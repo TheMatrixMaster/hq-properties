@@ -9,7 +9,8 @@
 	// import Media from './Media.svelte';
 </script>
 
-<div class="use-bg-image">
+<div class="use-bg-image" />
+<div class="main-content">
 	<Header />
 	<Home />
 	<About />

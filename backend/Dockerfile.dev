@@ -1,0 +1,33 @@
+FROM rustlang/rust:nightly AS builder
+
+# Setup working environment
+RUN apt-get update -y
+RUN apt-get install pkg-config libssl-dev
+
+WORKDIR /home/api
+
+# Compile on dummy source code for better caching
+COPY Cargo.toml Cargo.lock ./
+RUN mkdir src
+RUN echo "fn main() {}" > src/main.rs
+
+# Build the dependencies
+RUN cargo build --release --features build-${BINARY}
+
+# Add our source code
+ADD --chown=rust:rust . ./
+RUN touch src/main.rs
+
+ARG BINARY
+ENV SERVER=${BINARY}
+RUN rm ./target/release/deps/api*
+
+# Build the release binary
+RUN cargo build --features build-${BINARY} --release --bin ${BINARY}
+
+# Strip binary for size optimization
+RUN strip ./target/release/${BINARY}
+
+RUN chmod +x /home/api/entrypoint.sh
+ENTRYPOINT ["/home/api/entrypoint.sh"]
+CMD []

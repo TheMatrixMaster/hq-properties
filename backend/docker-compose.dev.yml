@@ -1,0 +1,67 @@
+version: '3'
+
+services:
+  db:
+    container_name: postgres
+    image: postgres:15.3-alpine
+    environment:
+      POSTGRES_DB: ma_p_site
+      POSTGRES_USER: ma_p_site
+      POSTGRES_HOST: postgres
+      POSTGRES_PASSWORD_FILE: /run/secrets/POSTGRES_PASSWORD
+    secrets:
+      - POSTGRES_PASSWORD
+    ports:
+      - "5432:5432"
+
+  fw:
+    restart: on-failure
+    depends_on:
+      - db
+      - api
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      args:
+        BINARY: fw
+    environment:
+      POSTGRES_DB: ma_p_site
+      POSTGRES_USER: ma_p_site
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      ROCKET_ENV: debug
+      ROCKET_ADDRESS: 0.0.0.0
+    secrets:
+      - POSTGRES_PASSWORD
+    volumes:
+      - .watchdir:/home/.watchdir
+
+  api:
+    restart: on-failure
+    depends_on:
+      - db
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      args:
+        BINARY: api
+    environment:
+      POSTGRES_DB: ma_p_site
+      POSTGRES_USER: ma_p_site
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      ROCKET_ENV: debug
+      ROCKET_ADDRESS: 0.0.0.0
+    secrets:
+      - POSTGRES_PASSWORD
+    ports:
+      - "8000:8000"
+    volumes:
+      - cargo-cache:/root/.cargo
+
+volumes:
+  cargo-cache: {}
+
+secrets:
+  POSTGRES_PASSWORD:
+    file: ./secrets/POSTGRES_PASSWORD
