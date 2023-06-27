@@ -42,6 +42,7 @@ FROM alpine:latest
 
 RUN apk update
 RUN apk add bash
+RUN apk --no-cache add unzip
 RUN apk --no-cache add ca-certificates
 
 ARG BINARY
