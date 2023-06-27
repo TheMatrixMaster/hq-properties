@@ -4,7 +4,9 @@ use notify::{RecommendedWatcher, RecursiveMode, Watcher, Config};
 
 use chrono::NaiveDateTime;
 use rocket::serde::{Deserialize};
-use std::{path::Path, ffi::OsStr, process::Command};
+use std::path::{Path, PathBuf};
+use std::{ffi::OsStr, process::Command};
+use std::{thread, time::Duration};
 use std::collections::HashMap;
 
 const FILENAMES: [(&'static str, &'static str); 3] = [
@@ -222,6 +224,52 @@ fn parse_listings(data: &mut Vec<u8>) -> Result<(), FileWatcherError> {
     Ok(())
 }
 
+fn handle_new_validated_file(main_path: &PathBuf) {
+    println!("We first sleep thread for 1 minute to ensure ftp has completed.");
+    thread::sleep(Duration::from_secs(60));
+    
+    let mut did_fail: bool = false;
+    let mut data: HashMap<&str, Vec<u8>> = HashMap::new();
+    
+    for (file_name, key) in FILENAMES {
+
+        let main_file = match Command::new("unzip")
+            .arg("-p")
+            .arg(main_path)
+            .arg(file_name)
+            .output() {
+                Ok(v) => v,
+                Err(e) => {
+                    println!("Error: {e}!");
+                    did_fail = true;
+                    break;
+                }
+            };
+        
+        if main_file.status.success() {
+            data.insert(key, main_file.stdout);
+        } else {
+            println!("Error: {:?}", parse_str(Some(&main_file.stderr)));
+            did_fail = true;
+            break;
+        }
+    }
+    
+    // TODO notify Stephen that process failed here
+    if did_fail { return }
+
+    // Process listings
+    let _ = parse_listings(data.get_mut("listings").unwrap());
+    let _ = parse_listing_images(data.get_mut("photos").unwrap());
+
+    println!("Deleting zip archive: {:?} after successfull parsing", main_path);
+    
+    match std::fs::remove_file(main_path).err() {
+        Some(e) => { println!("{:}", e); },
+        None => return,
+    };
+}
+
 fn watch<P: AsRef<Path>>(path: P) -> Result<(), FileWatcherError> {
     let (tx, rx) = std::sync::mpsc::channel();
 
@@ -242,7 +290,7 @@ fn watch<P: AsRef<Path>>(path: P) -> Result<(), FileWatcherError> {
                     let main_path = match event.paths
                         .get(0)
                         .ok_or(make_err("Expected file path for associated create event")) {
-                            Ok(v) => v,
+                            Ok(v) => v.clone(),
                             Err(e) => { println!("{:}", e.details); continue; },
                         };
 
@@ -264,47 +312,11 @@ fn watch<P: AsRef<Path>>(path: P) -> Result<(), FileWatcherError> {
                     match (is_file_stem_valid, main_path.is_file(), extension) {
                         (true, true, Some("zip")) => {
                             println!("Processing new data from zip file: {:?}", main_path);
-                            
-                            let mut did_fail: bool = false;
-                            let mut data: HashMap<&str, Vec<u8>> = HashMap::new();
-                            
-                            for (file_name, key) in FILENAMES {
 
-                                let main_file = match Command::new("unzip")
-                                    .arg("-p")
-                                    .arg(main_path)
-                                    .arg(file_name)
-                                    .output() {
-                                        Ok(v) => v,
-                                        Err(e) => {
-                                            println!("Error: {e}!");
-                                            did_fail = true;
-                                            break;
-                                        }
-                                    };
-                                
-                                if main_file.status.success() {
-                                    data.insert(key, main_file.stdout);
-                                } else {
-                                    println!("Error: {:?}", parse_str(Some(&main_file.stderr)));
-                                    did_fail = true;
-                                    break;
-                                }
-                            }
-                            
-                            // TODO notify Stephen that process failed here
-                            if did_fail { continue }
-
-                            // Process listings
-                            let _ = parse_listings(data.get_mut("listings").unwrap());
-                            let _ = parse_listing_images(data.get_mut("photos").unwrap());
-
-                            println!("Deleting zip archive: {:?} after successfull parsing", main_path);
-                            
-                            match std::fs::remove_file(main_path).err() {
-                                Some(e) => { println!("{:}", e); continue; },
-                                None => continue,
-                            };
+                            // TODO spawn new thread to run this method
+                            thread::spawn(move || {
+                                handle_new_validated_file(&main_path);
+                            });
                         },
                         _ => {
                             println!("Deleting unexpected file: {:?}", main_path);
