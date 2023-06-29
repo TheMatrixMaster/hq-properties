@@ -224,6 +224,16 @@ fn parse_listings(data: &mut Vec<u8>) -> Result<(), FileWatcherError> {
     Ok(())
 }
 
+/** @brief Handles validated file in new thread
+ * 
+ * Currently, we optimistically sleep the thread for 60 seconds in hopes that
+ * the file transfer has completed within this window and that the zip archive 
+ * will be ready for extraction
+ * 
+ * TODO: Create a busy waiting while loop with exponential backoff that periodically
+ * checks the zip archive file to see if it is valid and ready for extraction 
+ * ex: use unzip -t file.zip
+ */
 fn handle_new_validated_file(main_path: &PathBuf) {
     println!("We first sleep thread for 1 minute to ensure ftp has completed.");
     thread::sleep(Duration::from_secs(60));
