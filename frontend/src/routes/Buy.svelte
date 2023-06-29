@@ -42,10 +42,12 @@
 	<div class="left-col">
 		<img alt="buy-home" src={BuyImg} />
 		<p>
-			Purchasing a new property is no small feat, and we are here to help. We put together this
-			information together to help guide you through the various steps and stages of purchasing a
-			property in Quebec. Our objective is to provide you with relevant information and sound advice
-			from beginning to end.
+			As your trusted real estate agent, I understand that purchasing a new property is a
+			significant undertaking. Rest assured, I am here to assist you every step of the way. I have
+			carefully curated this information to serve as a comprehensive guide through the stages of
+			purchasing a property in Quebec. My goal is to offer you valuable insights and expert advice
+			from start to finish, ensuring a seamless and informed buying experience. Together, let's make
+			your property dreams a reality.
 		</p>
 	</div>
 	<div class="right-col">
