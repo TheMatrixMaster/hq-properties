@@ -4,6 +4,10 @@
 	import Footer from './Footer.svelte';
 </script>
 
+<svelte:head>
+	<title>HQ Properties</title>
+</svelte:head>
+
 <div class="app">
 	<main>
 		<Alert />
