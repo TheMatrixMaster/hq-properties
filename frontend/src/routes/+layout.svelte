@@ -1,10 +1,12 @@
 <script>
 	import './styles.scss';
+	import Alert from '$lib/components/Alert.svelte';
 	import Footer from './Footer.svelte';
 </script>
 
 <div class="app">
 	<main>
+		<Alert />
 		<slot />
 	</main>
 	<Footer />
