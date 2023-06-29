@@ -100,10 +100,21 @@
 				</div>
 			</div>
 			<div class="social-container">
-				<img alt="fb-icon" src={FbIcon} />
-				<img alt="ig-icon" src={IgIcon} />
-				<img alt="linkedin-icon" src={LinkedinIcon} />
-				<img alt="wechat-icon" src={WeChatIcon} />
+				<a href="https://www.facebook.com/irisqu72115" target="_blank">
+					<img alt="fb-icon" src={FbIcon} />
+				</a>
+				<a href="https://www.instagram.com/iris72115" target="_blank">
+					<img alt="ig-icon" src={IgIcon} />
+				</a>
+				<a href="https://www.linkedin.com/in/hong-qu-b68427230" target="_blank">
+					<img alt="linkedin-icon" src={LinkedinIcon} />
+				</a>
+				<a
+					href="https://msng.link/o?https://u.wechat.com/kJsIpu0fUkNyHP8vRenVm_8=wc"
+					target="_blank"
+				>
+					<img alt="wechat-icon" src={WeChatIcon} />
+				</a>
 			</div>
 		</div>
 		<div class="flat-sep" />
@@ -253,7 +264,7 @@
 		flex-direction: row;
 		align-items: center;
 		gap: 1rem;
-		& > img {
+		& img {
 			height: 2rem;
 			width: 2rem;
 		}
