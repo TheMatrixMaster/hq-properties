@@ -1,10 +1,16 @@
 <script>
 	import './styles.scss';
+	import Alert from '$lib/components/Alert.svelte';
 	import Footer from './Footer.svelte';
 </script>
 
+<svelte:head>
+	<title>HQ Properties</title>
+</svelte:head>
+
 <div class="app">
 	<main>
+		<Alert />
 		<slot />
 	</main>
 	<Footer />

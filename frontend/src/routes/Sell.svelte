@@ -1,15 +1,13 @@
 <script lang="ts">
 	import './styles.scss';
+	import { alert } from '../stores';
+	import { download, resetForm } from '../util';
+	import { PUBLIC_SERVER_URL } from '$env/static/public';
+
 	import SellImg from '$lib/images/sell.jpeg';
 	import TitleBar from '$lib/components/TitleBar.svelte';
 
-	import { PUBLIC_SERVER_URL } from '$env/static/public';
-
-	const SUCCESS_MSG: string =
-		"Thank you for downloading our seller's guide! We have sent it to the email address you provided.";
-	// const ERROR_MSG: string = 'Form input is invalid, please try again.';
-
-	let _alert: { msg: string; mode: 'success' | 'danger' } | null = null;
+	const SUCCESS_MSG: string = "Thank you for downloading our seller's guide!";
 
 	const onSubmit = (e: any) => {
 		const formData = new FormData(e.target);
@@ -29,10 +27,12 @@
 			body: JSON.stringify(body)
 		})
 			.then((resp) => resp.json())
-			.then((_) => (_alert = { msg: SUCCESS_MSG, mode: 'success' }))
+			.then((_) => ($alert = { msg: SUCCESS_MSG, mode: 'success' }))
+			.then(() => download(`${PUBLIC_SERVER_URL}/sell.pdf`))
+			.then(() => resetForm('sell-form'))
 			.catch((err) => {
 				console.error(err);
-				_alert = { msg: err, mode: 'danger' };
+				$alert = { msg: err, mode: 'danger' };
 			});
 	};
 </script>
@@ -50,7 +50,7 @@
 		</p>
 	</div>
 	<div class="right-col">
-		<form on:submit|preventDefault={onSubmit}>
+		<form on:submit|preventDefault={onSubmit} id="sell-form">
 			<label class="half">
 				First name
 				<input required id="first_name" name="first_name" type="text" placeholder="John" />

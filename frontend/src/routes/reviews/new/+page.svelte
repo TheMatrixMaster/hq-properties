@@ -1,8 +1,10 @@
 <script lang="ts">
-	import Header from '../../Header.svelte';
-	import Alert from '$lib/components/Alert.svelte';
-	import TitleBar from '$lib/components/TitleBar.svelte';
+	import { alert } from '../../../stores';
+	import { resetForm } from '../../../util';
 	import { PUBLIC_SERVER_URL } from '$env/static/public';
+
+	import Header from '../../Header.svelte';
+	import TitleBar from '$lib/components/TitleBar.svelte';
 
 	const isRequiredFieldValid = (val: any) => val != null && val !== '';
 	const parseFormData = (key: string, val: File | string) => {
@@ -13,7 +15,6 @@
 	const SUCCESS_MSG: string =
 		'Thank you very much! We have received your testimonial and will be publishing it shortly.';
 	const ERROR_MSG: string = 'Form input is invalid, please try again.';
-	let alert: { msg: string; mode: 'success' | 'danger' } | null = null;
 
 	const onSubmit = (e: any) => {
 		const formData = new FormData(e.target);
@@ -28,7 +29,7 @@
 		}
 
 		if (!isValid) {
-			alert = { msg: ERROR_MSG, mode: 'danger' };
+			$alert = { msg: ERROR_MSG, mode: 'danger' };
 			console.error(ERROR_MSG);
 			return;
 		}
@@ -42,10 +43,11 @@
 			body: JSON.stringify(body)
 		})
 			.then((resp) => resp.json())
-			.then((_) => (alert = { msg: SUCCESS_MSG, mode: 'success' }))
+			.then((_) => ($alert = { msg: SUCCESS_MSG, mode: 'success' }))
+			.then(() => resetForm('new-review-form'))
 			.catch((err) => {
 				console.error(err);
-				alert = { msg: err, mode: 'danger' };
+				$alert = { msg: err, mode: 'danger' };
 			});
 	};
 </script>
@@ -57,9 +59,8 @@
 
 <Header isTransparent={false} />
 <section>
-	<Alert {...alert} visible={alert !== null} />
 	<TitleBar title="Write a Testimonial" />
-	<form on:submit|preventDefault={onSubmit}>
+	<form on:submit|preventDefault={onSubmit} id="new-review-form">
 		<label class="half">
 			First name
 			<input

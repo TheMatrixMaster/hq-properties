@@ -1,17 +1,46 @@
 <script lang="ts">
-	export let msg = '';
-	export let mode: 'success' | 'danger' = 'success';
-	export let visible = false;
+	import { onDestroy } from 'svelte';
+	import { alert } from '../../stores';
+	import type { Alert } from '../../stores';
+
+	export let ms: number = 3000;
+	let timeout: any;
+	let visible: boolean;
+
+	let msg = '';
+	let mode: 'success' | 'danger' = 'success';
+
+	const onMessageChange = (alert: Alert, ms: number) => {
+		clearTimeout(timeout);
+		if (!alert) {
+			visible = false;
+		} else {
+			visible = true;
+			msg = alert.msg;
+			mode = alert.mode;
+			let time = alert?.ms ?? ms;
+			if (ms > 0) {
+				timeout = setTimeout(() => (visible = false), time);
+			}
+		}
+	};
+
+	$: onMessageChange($alert, ms);
 	$: display = visible ? 'unset' : 'hidden';
+
+	onDestroy(() => clearTimeout(timeout));
 </script>
 
-<div class={`main-container ${mode} ${display}`}>
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<div class={`main-container ${mode} ${display}`} on:click={() => (visible = false)}>
 	<p><strong>{mode} alert!</strong> {msg}</p>
 </div>
 
 <style lang="scss">
 	div.main-container {
-		position: absolute;
+		z-index: 3;
+		position: fixed;
+		top: calc(var(--header-mini-height) + 1rem);
 		right: 3rem;
 
 		display: flex;
@@ -22,7 +51,8 @@
 
 		@media (orientation: portrait) {
 			right: unset;
-			position: relative;
+			border-radius: 0;
+			top: var(--header-mini-height);
 			width: -webkit-fill-available;
 			grid-column: span 12;
 			margin: 0;

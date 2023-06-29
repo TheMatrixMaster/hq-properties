@@ -12,13 +12,13 @@
 	import LinkedinIcon from '$lib/images/linkedin.svg';
 	import WeChatIcon from '$lib/images/wechat.svg';
 
+	import { alert } from '../stores';
+	import { resetForm } from '../util';
 	import { PUBLIC_SERVER_URL } from '$env/static/public';
 
 	const SUCCESS_MSG: string =
 		'Thank you very much! We have received your message and will reply shortly.';
 	const ERROR_MSG: string = 'Form input is invalid, please try again.';
-
-	let _alert: { msg: string; mode: 'success' | 'danger' } | null = null;
 
 	const isRequiredFieldValid = (val: any) => val != null && val !== '';
 
@@ -35,7 +35,7 @@
 		}
 
 		if (!isValid) {
-			_alert = { msg: ERROR_MSG, mode: 'danger' };
+			$alert = { msg: ERROR_MSG, mode: 'danger' };
 			console.error(ERROR_MSG);
 			return;
 		}
@@ -49,10 +49,11 @@
 			body: JSON.stringify(body)
 		})
 			.then((resp) => resp.json())
-			.then((_) => (_alert = { msg: SUCCESS_MSG, mode: 'success' }))
+			.then((_) => ($alert = { msg: SUCCESS_MSG, mode: 'success' }))
+			.then(() => resetForm('contact-form'))
 			.catch((err) => {
 				console.error(err);
-				_alert = { msg: err, mode: 'danger' };
+				$alert = { msg: err, mode: 'danger' };
 			});
 	};
 </script>
@@ -108,7 +109,7 @@
 		<div class="flat-sep" />
 		<div class="right-col">
 			<h2>Send a Message</h2>
-			<form on:submit|preventDefault={onSubmit}>
+			<form on:submit|preventDefault={onSubmit} id="contact-form">
 				<label class="full">
 					Name
 					<input required id="name" name="name" type="text" placeholder="ex: John Smith" value="" />
