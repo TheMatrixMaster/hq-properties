@@ -42,11 +42,12 @@
 	<div class="left-col">
 		<img alt="sell-home" src={SellImg} />
 		<p>
-			You want to sell at the highest possible price, with the least amount of effort. So, where to
-			start? It takes a broker with an in-depth understanding of your neighbourhood’s real estate
-			market to recognise your unique home's place within it. We encourage you to seek our advice
-			early in the process, and share your goals with us, so that we can develop a winning strategy
-			together.
+			As your dedicated real estate broker, I prioritize maximizing your sale price while minimizing
+			your effort. To achieve this, it is crucial to begin with a comprehensive understanding of
+			your neighborhood's real estate market. By assessing your home's unique position within the
+			market, I can provide valuable insights and guidance. I encourage you to involve me early in
+			the process and share your goals, allowing us to collaborate and develop a winning strategy
+			tailored to your specific needs.
 		</p>
 	</div>
 	<div class="right-col">

@@ -14,10 +14,12 @@
 			<h1>Hong Qu</h1>
 			<h2>Certified Real Estate Broker</h2>
 			<p>
-				Hong has been a consistent top performer with Royal LePage since 1988. She has a wealth of
-				experience, and a special empathy and understanding working with older clients who may be
-				making the transition from house to retirement living. Her involvement in the local
-				community and on a national level through Royal LePage has helped Hong develop an.
+				Welcome to the world of real estate excellence with Hong Qu, your dedicated professional
+				broker at Royal Lepage. With a seamless transition from a successful 20-year ownership of a
+				uniform supply business, Hong's outstanding communication and negotiation abilities have
+				already garnered her remarkable success as an agent. A proud West Island resident for over
+				15 years, Hong combines her local expertise with a fresh approach to deliver exceptional
+				service for your next home transition.
 			</p>
 			<div class="links">
 				<div class="social-container">
@@ -51,26 +53,30 @@
 		display: flex;
 		flex-direction: column;
 		grid-column: 7/13;
-	}
-	.right-col div {
-		display: flex;
-		flex-direction: column;
-		max-width: 25rem;
-	}
-	.right-col h1 {
-		font-size: 4rem;
-		font-weight: bolder;
-		margin: 0 0 0.5rem 0;
-		text-transform: uppercase;
-	}
-	.right-col h2 {
-		font-weight: 700;
-		margin: 0 0 1.5rem 0;
-	}
-	.right-col .links {
-		display: flex;
-		margin-top: 1rem;
-		flex-direction: column;
+
+		& > div {
+			display: flex;
+			flex-direction: column;
+			max-width: 30rem;
+		}
+		& h1 {
+			font-size: 4rem;
+			font-weight: bolder;
+			margin: 0 0 0.5rem 0;
+			text-transform: uppercase;
+		}
+		& h2 {
+			font-weight: 700;
+			margin: 0 0 1.5rem 0;
+		}
+		& p {
+			margin: 0;
+		}
+		& .links {
+			display: flex;
+			margin-top: 1.5rem;
+			flex-direction: column;
+		}
 	}
 	@media (orientation: portrait) {
 		#aboutme {
