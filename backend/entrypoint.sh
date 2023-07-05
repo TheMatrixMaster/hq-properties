@@ -9,13 +9,16 @@ export ROCKET_DATABASES="{db={url=\"${DATABASE_URL}\"}}"
 
 if [[ "$server" == "fw" ]]
 then
-    rm -rf ./static
-
     # Start the filewatcher at appropriate path
     ./target/release/fw /home/.watchdir
+    
+elif [[ "$server" == "seed_db" ]]
+then
+    # Start the seeder script
+    ./target/release/seed_db
 
 else
-    # Start the server
+    # Start the api server
     ./target/release/api
 
 fi

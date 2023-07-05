@@ -31,11 +31,26 @@ pub struct NewVideo {
     pub title: String,
 }
 
+#[derive(Serialize)]
+#[serde(crate = "rocket::serde")]
+pub struct VideoReturnPayload {
+    pub data: Vec<Video>,
+    pub size: i64,
+}
+
 impl Video {
     pub async fn get_with_id(id: i32, conn: &DbConn) -> QueryResult<Video> {
         conn.run(move |c| {
             all_videos.find(id)
                 .first::<Video>(c)
+        }).await
+    }
+
+    pub async fn get_size(conn: &DbConn) -> QueryResult<i64> {
+        conn.run(move |c| {
+            all_videos
+                .count()
+                .get_result::<i64>(c)
         }).await
     }
 
@@ -93,14 +108,21 @@ pub async fn get_all(
     conn: DbConn,
     limit: Option<u8>,
     offset: Option<u32>,
-) -> Result<Json<Vec<Video>>, Json<ApiError>>
+) -> Result<Json<VideoReturnPayload>, Json<ApiError>>
 {
-    Video::get_all(limit, offset, &conn)
+    let size = Video::get_size(&conn)
         .await
-        .map(Json)
         .map_err(|e| {
             Json(ApiError { details: e.to_string() })
-        })
+        })?;
+
+    let data = Video::get_all(limit, offset, &conn)
+        .await
+        .map_err(|e| {
+            Json(ApiError { details: e.to_string() })
+        })?;
+
+    Ok(Json(VideoReturnPayload { data, size }))
 }
 
 #[post("/", format = "json", data = "<post>")]

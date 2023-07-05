@@ -33,11 +33,26 @@ pub struct NewPost {
     pub body: String,
 }
 
+#[derive(Serialize)]
+#[serde(crate = "rocket::serde")]
+pub struct PostReturnPayload {
+    pub data: Vec<Post>,
+    pub size: i64,
+}
+
 impl Post {
     pub async fn get_with_id(id: i32, conn: &DbConn) -> QueryResult<Post> {
         conn.run(move |c| {
             all_posts.find(id)
                 .first::<Post>(c)
+        }).await
+    }
+
+    pub async fn get_size(conn: &DbConn) -> QueryResult<i64> {
+        conn.run(move |c| {
+            all_posts
+                .count()
+                .get_result::<i64>(c)
         }).await
     }
 
@@ -94,14 +109,21 @@ pub async fn get_all(
     conn: DbConn,
     limit: Option<u8>,
     offset: Option<u32>,
-) -> Result<Json<Vec<Post>>, Json<ApiError>>
+) -> Result<Json<PostReturnPayload>, Json<ApiError>>
 {
-    Post::get_all(limit, offset, &conn)
+    let size = Post::get_size(&conn)
         .await
-        .map(Json)
         .map_err(|e| {
             Json(ApiError { details: e.to_string() })
-        })
+        })?;
+
+    let data = Post::get_all(limit, offset, &conn)
+        .await
+        .map_err(|e| {
+            Json(ApiError { details: e.to_string() })
+        })?;
+    
+    Ok(Json(PostReturnPayload { data, size }))
 }
 
 #[post("/", format = "json", data = "<post>")]

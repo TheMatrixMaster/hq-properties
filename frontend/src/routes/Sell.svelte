@@ -28,7 +28,7 @@
 		})
 			.then((resp) => resp.json())
 			.then((_) => ($alert = { msg: SUCCESS_MSG, mode: 'success' }))
-			.then(() => download(`${PUBLIC_SERVER_URL}/sell.pdf`))
+			.then(() => download(`${PUBLIC_SERVER_URL}/files/sell.pdf`))
 			.then(() => resetForm('sell-form'))
 			.catch((err) => {
 				console.error(err);

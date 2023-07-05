@@ -13,7 +13,7 @@
 	</div>
 	<div class="right-col">
 		<h6>#1 Real Estate Agent</h6>
-		<h2>West Island & Montreal</h2>
+		<h2>West Island<br />Montreal & Laval</h2>
 		<button class="secondary" on:click={() => goto('/reviews/1')}>
 			What recent<br />clients say
 			<!-- TODO add icon -->

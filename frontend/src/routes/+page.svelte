@@ -6,7 +6,7 @@
 	import Buy from './Buy.svelte';
 	import Sell from './Sell.svelte';
 	import Reviews from './Reviews.svelte';
-	// import Media from './Media.svelte';
+	import Posts from './Posts.svelte';
 </script>
 
 <div class="use-bg-image" />
@@ -18,5 +18,5 @@
 	<Buy />
 	<Sell />
 	<Reviews />
-	<!-- <Media /> -->
+	<Posts />
 </div>
