@@ -63,11 +63,12 @@
 				<a href="/#reviews">Testimonials</a>
 			</li>
 			<li>
-				<a href="#contact">Contact</a>
-			</li>
-			<!-- <li>
 				<a href="/#media">Media</a>
 			</li>
+			<li>
+				<a href="#contact">Contact</a>
+			</li>
+			<!--
 			<li>
 				<a href="/">FR | 中文</a>
 			</li> -->

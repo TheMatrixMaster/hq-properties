@@ -39,3 +39,6 @@ run_api: has_secrets has_postgres
 
 run_fw: has_secrets has_postgres
 	cargo run --features build-fw --bin fw ${WATCH_DIR}
+
+seed_db: has_secrets has_postgres
+	cargo run --features build-seed_db --bin seed_db
