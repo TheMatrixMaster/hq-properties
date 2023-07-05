@@ -28,7 +28,7 @@
 	});
 </script>
 
-<section id="posts">
+<section id="media">
 	<TitleBar title="Posts" action={{ label: 'See all', onPress: () => goto('/posts/1') }} />
 	{#if fetching}
 		<p>Loading</p>
@@ -46,7 +46,7 @@
 </section>
 
 <style lang="scss">
-	#posts {
+	#media {
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
