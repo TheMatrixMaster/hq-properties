@@ -39,7 +39,7 @@ path = "src/lib.rs"
 [features]
 build-api = ["rocket_contrib", "rocket_cors", "diesel_migrations"]
 build-fw = ["csv", "notify", "reqwest"]
-build-sdb = ["termion"]
+build-seed_db = ["termion"]
 
 [[bin]]
 doc = false
