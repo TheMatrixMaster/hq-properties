@@ -28,7 +28,7 @@
 				</div>
 				<div class="social-container">
 					<img alt="mail" src={EmailIcon} />
-					<a href="mailto::hong.qu@royallepage.ca" target="_blank">hong.qu@royallepage.ca</a>
+					<a href="mailto::irisqu@royallepage.ca" target="_blank">irisqu@royallepage.ca</a>
 				</div>
 			</div>
 		</div>

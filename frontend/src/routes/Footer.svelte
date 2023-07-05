@@ -81,7 +81,7 @@
 					<img alt="email-icon" src={EmailIcon} />
 					<div class="contact-col">
 						<h2>Email</h2>
-						<p>quhong@royallepage.ca</p>
+						<p>irisqu@royallepage.ca</p>
 					</div>
 				</div>
 				<div class="contact-row">

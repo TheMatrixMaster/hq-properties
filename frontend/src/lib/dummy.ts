@@ -88,3 +88,45 @@ const review: Review = {
 };
 
 export const dummy_reviews: Review[] = [review, review, review, review, review];
+
+export type Post = {
+	id: number;
+	img_url: string;
+	title: string;
+	body: string;
+	created_at: string;
+	updated_at: string;
+};
+
+export type Video = {
+	id: number;
+	video_url: string;
+	title: string;
+	created_at: string;
+	updated_at: string;
+};
+
+const post: Post = {
+	id: -1,
+	img_url: 'https://source.unsplash.com/e6FMMambeO4',
+	title: 'Appreciation',
+	body: 'Dear Janet , thanks for your comment this morning. Your acknowledgment of my service is \
+				the most important factor for my career. Thanks again for giving me this opportunity to \
+				serve your family, to put your trust on me and here we are today. Dear Janet , thanks for \
+				your comment this morning. Your acknowledgment of my service is \
+				the most important factor for my career. Thanks again for giving me this opportunity to \
+				serve your family, to put your trust on me and here we are today',
+	created_at: '100',
+	updated_at: '100'
+};
+
+const video: Video = {
+	id: -1,
+	video_url: 'https://youtu.be/yTwbqaV1gfY',
+	title: 'Some video title',
+	created_at: '100',
+	updated_at: '100'
+};
+
+export const dummy_posts: Post[] = [post, post, post];
+export const dummy_videos: Video[] = [video, video, video, video, video];

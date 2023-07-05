@@ -57,3 +57,29 @@ jobs:
           cache-to: type=gha,mode=max
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/hq-fw:latest
+
+  seeder_cli:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push seeder image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./backend
+          file: ./backend/Dockerfile.prod
+          build-args: BINARY=seed_db
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/hq-seeder:latest
