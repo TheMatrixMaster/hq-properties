@@ -28,6 +28,7 @@ export const load = async ({ fetch, params }) => {
 		reviews,
 		size,
 		error,
-		fetching
+		fetching,
+		LIMIT
 	};
 };
