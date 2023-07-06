@@ -20,7 +20,7 @@ notify = { version = "6.0.0", features = ["serde"], optional = true }
 reqwest = { version = "0.11", features = ["blocking", "json"], optional = true }
 
 diesel_migrations = { version = "2.1.0", features = ["postgres"], optional = true }
-termion = { version = "2.0.1", optional = true }
+termion = { version = "*", optional = true }
 
 [dependencies.rocket_contrib]
 version = "0.4.10"

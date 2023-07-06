@@ -1,7 +1,9 @@
+extern crate openssl;
+
 use backend_api::*;
-use backend_api::schema::videos::video_url;
 use std::io::{stdin, stdout, Read, Write};
 use diesel::{RunQueryDsl, PgConnection};
+
 use termion::event::Key;
 use termion::input::TermRead;
 
