@@ -1,6 +1,6 @@
 import { PUBLIC_SERVER_URL } from '$env/static/public';
 
-const LIMIT: number = 8;
+const LIMIT: number = 12;
 
 export const load = async ({ fetch, params }) => {
 	let fetching: boolean = true;
@@ -28,6 +28,7 @@ export const load = async ({ fetch, params }) => {
 		posts,
 		size,
 		error,
-		fetching
+		fetching,
+		LIMIT
 	};
 };

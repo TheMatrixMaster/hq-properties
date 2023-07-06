@@ -5,11 +5,10 @@
 	import ReviewCard from '$lib/components/ReviewCard.svelte';
 	import Pagination from '$lib/components/Pagination.svelte';
 
-	const LIMIT: number = 8;
 	export let data;
 
 	$: page = parseInt(data.slug) ?? 1;
-	$: offset = (page - 1) * LIMIT;
+	$: offset = (page - 1) * data.LIMIT;
 
 	const changePage = (page: number) => goto(`/reviews/${page}`);
 </script>
@@ -39,7 +38,7 @@
 			{/each}
 		{/if}
 	</div>
-	<Pagination size={data.size} limit={LIMIT} {offset} onPress={changePage} />
+	<Pagination size={data.size} limit={data.LIMIT} {offset} onPress={changePage} />
 </section>
 
 <style lang="scss">
