@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { _ } from 'svelte-i18n';
 	import { alert } from '../../../stores';
 	import { resetForm } from '../../../util';
 	import { PUBLIC_SERVER_URL } from '$env/static/public';
@@ -12,9 +13,8 @@
 		else return val;
 	};
 
-	const SUCCESS_MSG: string =
-		'Thank you very much! We have received your testimonial and will be publishing it shortly.';
-	const ERROR_MSG: string = 'Form input is invalid, please try again.';
+	const SUCCESS_MSG: string = $_('thx_writing');
+	const ERROR_MSG: string = $_('invalid_form');
 
 	const onSubmit = (e: any) => {
 		const formData = new FormData(e.target);
@@ -53,16 +53,16 @@
 </script>
 
 <svelte:head>
-	<title>Testimonials — New</title>
+	<title>{$_('write_testimonial')}</title>
 	<meta name="reviews" content="new review" />
 </svelte:head>
 
 <Header isTransparent={false} />
 <section>
-	<TitleBar title="Write a Testimonial" />
+	<TitleBar title={$_('write_testimonial')} />
 	<form on:submit|preventDefault={onSubmit} id="new-review-form">
 		<label class="half">
-			First name
+			{$_('first_name')}
 			<input
 				required
 				type="text"
@@ -73,7 +73,7 @@
 			/>
 		</label>
 		<label class="half">
-			Last name
+			{$_('last_name')}
 			<input
 				required
 				type="text"
@@ -84,17 +84,17 @@
 			/>
 		</label>
 		<label class="full textbox">
-			Review
-			<textarea required id="body" name="body" rows="8" value="" placeholder="Write a review..." />
+			{$_('review')}
+			<textarea required id="body" name="body" rows="8" value="" placeholder={$_('write_review')} />
 		</label>
 		<div class="full checkbox-container">
 			<input type="checkbox" name="anonymous" id="anonymous" value={true} />
 			<div class="checkbox-label">
-				<label for="anonymous"><strong>Anonymous</strong></label>
-				Check this if you'd like to hide your name on the website
+				<label for="anonymous"><strong>{$_('anonymous')}</strong></label>
+				{$_('anonymous_desc')}
 			</div>
 		</div>
-		<button class="primary" type="submit">Send</button>
+		<button class="primary" type="submit">{$_('send_btn')}</button>
 	</form>
 </section>
 

@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { _ } from 'svelte-i18n';
+
 	export let size: number;
 	export let limit: number;
 	export let offset: number;
@@ -12,20 +14,20 @@
 
 <div class="main-container">
 	{#if size > 0}
-		<p>Showing <strong>{start}</strong> to <strong>{end}</strong> of {size} entries</p>
+		<p>{$_('pagination_some', { values: { start, end, size } })}</p>
 	{:else}
-		<p>Showing <strong>0</strong> of {size} entries</p>
+		<p>{$_('pagination_none')}</p>
 	{/if}
 	<div class="btn-container">
 		<button class="secondary" disabled={currPage === 1} on:click={() => onPress(currPage - 1)}>
-			Previous
+			{$_('prev_btn')}
 		</button>
 		<button
 			class="secondary"
 			disabled={currPage === numPages}
 			on:click={() => onPress(currPage + 1)}
 		>
-			Next
+			{$_('next_btn')}
 		</button>
 	</div>
 </div>
