@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { _ } from 'svelte-i18n';
 	import { onMount } from 'svelte';
 	import { PUBLIC_SERVER_URL } from '$env/static/public';
 	import { goto } from '$app/navigation';
@@ -29,13 +30,13 @@
 
 <section id="reviews">
 	<TitleBar
-		title="Testimonials"
-		action={{ label: 'Write a testimonial', onPress: () => goto('/reviews/new') }}
+		title={$_('testimonials')}
+		action={{ label: $_('write_testimonial'), onPress: () => goto('/reviews/new') }}
 	/>
 	{#if fetching}
-		<p>Loading</p>
+		<p>{$_('loading')}</p>
 	{:else if reviews.length == 0}
-		<p>No reviews have been written yet.</p>
+		<p>{$_('no_reviews')}</p>
 	{:else if error}
 		<p>{error}</p>
 	{:else}

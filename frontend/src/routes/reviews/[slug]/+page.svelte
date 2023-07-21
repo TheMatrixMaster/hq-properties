@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { _ } from 'svelte-i18n';
 	import { goto } from '$app/navigation';
 	import Header from '../../Header.svelte';
 	import TitleBar from '$lib/components/TitleBar.svelte';
@@ -14,24 +15,24 @@
 </script>
 
 <svelte:head>
-	<title>Testimonials</title>
+	<title>{$_('testimonials')}</title>
 	<meta name="reviews" content="All reviews" />
 </svelte:head>
 
 <Header isTransparent={false} />
 <section>
 	<TitleBar
-		title="Testimonials"
-		action={{ label: 'Write a testimonial', onPress: () => goto('/reviews/new') }}
+		title={$_('testimonials')}
+		action={{ label: $_('write_testimonial'), onPress: () => goto('/reviews/new') }}
 	/>
 	<div class="filter-container" />
 	<div class="card-container">
 		{#if data.fetching}
-			<p>Loading</p>
+			<p>{$_('loading')}</p>
 		{:else if data.error}
 			<p>{data.error}</p>
 		{:else if data.reviews.length === 0}
-			<p>It's a little empty in here. Why don't you write the first review!</p>
+			<p>{$_('no_reviews_list')}</p>
 		{:else}
 			{#each data.reviews as card}
 				<ReviewCard data={card} mode="list" />

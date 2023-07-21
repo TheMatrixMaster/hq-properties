@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { _ } from 'svelte-i18n';
 	import { goto } from '$app/navigation';
 	import { dummy_reviews } from '$lib/dummy';
 	import type { Review } from '$lib/dummy';
@@ -20,17 +21,17 @@
 			<div class="avatar">
 				<h1>{getInitials()}</h1>
 			</div>
-			<h2>{data.anonymous ? 'Anonymous' : data.first_name}</h2>
+			<h2>{data.anonymous ? $_('anonymous') : data.first_name}</h2>
 		</div>
 		<div class="body-container">
 			<p>{data.body}</p>
 		</div>
-		<button class="secondary" on:click={() => goto('/reviews/1')}>Read More</button>
+		<button class="secondary" on:click={() => goto('/reviews/1')}>{$_('read_more')}</button>
 	</div>
 {:else}
 	<div class="base-card list-card">
 		<div class="list-header">
-			<h2>{data.anonymous ? 'Anonymous' : `${data.first_name} ${data.last_name}`}</h2>
+			<h2>{data.anonymous ? $_('anonymous') : `${data.first_name} ${data.last_name}`}</h2>
 			<h3>{displayTime}</h3>
 		</div>
 		<p>{data.body}</p>
@@ -48,7 +49,6 @@
 		display: grid;
 		margin: 0 1rem;
 		padding: 2rem 4rem;
-		/* max-height: 500px; */
 		grid-template-rows: fit-content(100%) auto fit-content(100%);
 	}
 	div.list-card {

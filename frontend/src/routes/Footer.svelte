@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { _ } from 'svelte-i18n';
 	import Logo from '$lib/images/sl-icon.png';
 	import RLLogo from '$lib/images/royal-lepage.svg';
 
@@ -16,9 +17,8 @@
 	import { resetForm } from '../util';
 	import { PUBLIC_SERVER_URL } from '$env/static/public';
 
-	const SUCCESS_MSG: string =
-		'Thank you very much! We have received your message and will reply shortly.';
-	const ERROR_MSG: string = 'Form input is invalid, please try again.';
+	const SUCCESS_MSG: string = $_('thx_message');
+	const ERROR_MSG: string = $_('invalid_form');
 
 	const isRequiredFieldValid = (val: any) => val != null && val !== '';
 
@@ -73,28 +73,28 @@
 				<div class="contact-row">
 					<img alt="phone-icon" src={PhoneIcon} />
 					<div class="contact-col">
-						<h2>Phone Number</h2>
+						<h2>{$_('phone_number')}</h2>
 						<p>(514) 651-2536</p>
 					</div>
 				</div>
 				<div class="contact-row">
 					<img alt="email-icon" src={EmailIcon} />
 					<div class="contact-col">
-						<h2>Email</h2>
+						<h2>{$_('email')}</h2>
 						<p>irisqu@royallepage.ca</p>
 					</div>
 				</div>
 				<div class="contact-row">
 					<img alt="clock-icon" src={ClockIcon} />
 					<div class="contact-col">
-						<h2>Open Hours</h2>
+						<h2>{$_('open_hours')}</h2>
 						<p>24 / 7 / 365</p>
 					</div>
 				</div>
 				<div class="contact-row">
 					<img alt="map-icon" src={MapIcon} />
 					<div class="contact-col">
-						<h2>Address</h2>
+						<h2>{$_('address')}</h2>
 						<p>6971 ch Côte-de-Liesse, St-Laurent, Quebec H4T1Z3</p>
 					</div>
 				</div>
@@ -119,14 +119,14 @@
 		</div>
 		<div class="flat-sep" />
 		<div class="right-col">
-			<h2>Send a Message</h2>
+			<h2>{$_('send_message')}</h2>
 			<form on:submit|preventDefault={onSubmit} id="contact-form">
 				<label class="full">
-					Name
+					{$_('name')}
 					<input required id="name" name="name" type="text" placeholder="ex: John Smith" value="" />
 				</label>
 				<label class="full">
-					Email
+					{$_('email')}
 					<input
 						required
 						id="email"
@@ -137,21 +137,21 @@
 					/>
 				</label>
 				<label class="full">
-					Phone
+					{$_('phone')}
 					<input required id="phone" name="phone" type="tel" value="" />
 				</label>
 				<label class="full">
-					Message
+					{$_('message')}
 					<textarea
 						required
 						id="body"
 						name="body"
 						rows="5"
-						placeholder="Write a message..."
+						placeholder={$_('write_message')}
 						value=""
 					/>
 				</label>
-				<button class="primary" type="submit">Submit</button>
+				<button class="primary" type="submit">{$_('submit_btn')}</button>
 			</form>
 		</div>
 	</div>

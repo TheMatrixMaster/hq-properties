@@ -2,10 +2,27 @@ extern crate openssl;
 
 use backend_api::*;
 use std::io::{stdin, stdout, Read, Write};
-use diesel::{RunQueryDsl, PgConnection};
+use diesel::{RunQueryDsl, PgConnection, ExpressionMethods};
 
 use termion::event::Key;
 use termion::input::TermRead;
+
+static PROMPTS: &'static[Prompt] = &[
+    Prompt {
+        title: "Manage posts",
+        actions: &[
+            Action { title: "Create post", func_id: "create_post" },
+            Action { title: "Delete post", func_id: "delete_post" },
+        ]
+    },
+    Prompt {
+        title: "Manage videos",
+        actions: &[
+            Action { title: "Create video", func_id: "create_video" },
+            Action { title: "Delete video", func_id: "delete_video" },
+        ]
+    }
+];
 
 pub struct Prompt {
     pub title: &'static str,
@@ -15,7 +32,10 @@ pub struct Prompt {
 trait Executable {
     fn go(&self) -> ();
     fn create_post(&self, conn: &mut PgConnection) -> ();
+    fn delete_post(&self, conn: &mut PgConnection) -> ();
     fn create_video(&self, conn: &mut PgConnection) -> ();
+    fn delete_video(&self, conn: &mut PgConnection) -> ();
+
     // fn create_listing(&self, conn: &mut PgConnection) -> ();
     // fn create_listing_image(&self, conn: &mut PgConnection) -> ();
     // fn create_review(&self, conn: &mut PgConnection) -> ();
@@ -59,6 +79,24 @@ impl Executable for Action {
         println!();
     }
 
+    fn delete_post(&self, conn: &mut PgConnection) -> () {
+        use crate::schema::posts;
+        use crate::schema::posts::table;
+
+        let mut post_id = String::new();
+        println!("What is the post id?");
+        stdin().read_line(&mut post_id).unwrap();
+        let post_id = post_id.trim_end().parse::<i32>().unwrap();
+
+        diesel::delete(table)
+            .filter(posts::id.eq(post_id))
+            .execute(conn)
+            .expect("Failed to delete post from db!");
+
+        println!("\nSuccessfully deleted post!");
+        println!();
+    }
+
     fn create_video(&self, conn: &mut PgConnection) {
         use crate::videos::NewVideo;
         use crate::schema::videos::table;
@@ -87,30 +125,35 @@ impl Executable for Action {
         println!();
     }
 
+    fn delete_video(&self, conn: &mut PgConnection) -> () {
+        use crate::schema::videos;
+        use crate::schema::videos::table;
+
+        let mut video_id = String::new();
+        println!("What is the video id?");
+        stdin().read_line(&mut video_id).unwrap();
+        let video_id = video_id.trim_end().parse::<i32>().unwrap();
+
+        diesel::delete(table)
+            .filter(videos::id.eq(video_id))
+            .execute(conn)
+            .expect("Failed to delete video from db!");
+
+        println!("\nSuccessfully deleted video!");
+        println!();
+    }
+
     fn go(&self) -> () {
         let conn = &mut establish_connection();
         match self.func_id {
             "create_post" => self.create_post(conn),
+            "delete_post" => self.delete_post(conn),
             "create_video" => self.create_video(conn),
+            "delete_video" => self.delete_video(conn),
             &_ => todo!(),
         }
     }
 }
-
-static PROMPTS: &'static[Prompt] = &[
-    Prompt {
-        title: "Manage posts",
-        actions: &[
-            Action { title: "Create post", func_id: "create_post" },
-        ]
-    },
-    Prompt {
-        title: "Manage videos",
-        actions: &[
-            Action { title: "Create video", func_id: "create_video" },
-        ]
-    }
-];
 
 fn create_review() {
 

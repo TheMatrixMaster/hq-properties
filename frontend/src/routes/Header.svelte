@@ -1,4 +1,9 @@
 <script lang="ts">
+	import { LOCALES } from '$lib/i18n';
+	import { openSideBar } from '../stores';
+	import { _, locale, locales } from 'svelte-i18n';
+	import HamburgerIcon from '$lib/images/menu.svg';
+
 	export let isTransparent = true;
 	export let duration = '300ms';
 	export let offset = 50;
@@ -51,29 +56,36 @@
 	<nav>
 		<ul>
 			<li>
-				<a href="/#listings">My Listings</a>
+				<a href="/#listings">{$_('listings')}</a>
 			</li>
 			<li>
-				<a href="/#buy">Buy</a>
+				<a href="/#buy">{$_('buy')}</a>
 			</li>
 			<li>
-				<a href="/#sell">Sell</a>
+				<a href="/#sell">{$_('sell')}</a>
 			</li>
 			<li>
-				<a href="/#reviews">Testimonials</a>
+				<a href="/#reviews">{$_('testimonials')}</a>
 			</li>
 			<li>
-				<a href="/#media">Media</a>
+				<a href="/#media">{$_('media')}</a>
 			</li>
 			<li>
-				<a href="#contact">Contact</a>
+				<a href="/#contact">{$_('contact')}</a>
 			</li>
-			<!--
 			<li>
-				<a href="/">FR | 中文</a>
-			</li> -->
+				<select bind:value={$locale}>
+					{#each $locales as loc}
+						<option value={loc}>{LOCALES[loc] ?? loc}</option>
+					{/each}
+				</select>
+			</li>
 		</ul>
 	</nav>
+
+	<button class="sidebar-btn" on:click={() => ($openSideBar = true)}>
+		<img src={HamburgerIcon} alt="sidebar-btn" />
+	</button>
 </header>
 
 <style lang="scss">
@@ -106,7 +118,7 @@
 		justify-content: center;
 		--background: rgba(255, 255, 255, 0.7);
 
-		@media (orientation: portrait) {
+		@media (orientation: portrait), (orientation: landscape) and (aspect-ratio < 1.55) {
 			display: none;
 		}
 	}
@@ -123,17 +135,32 @@
 		scroll-behavior: smooth;
 		position: relative;
 		height: 100%;
+
+		& > select {
+			border: none;
+		}
 	}
-	nav a {
+	nav a,
+	nav select {
 		display: flex;
 		height: 100%;
 		align-items: center;
-		padding: 0 0 0 7vw;
+		padding: 0 0 0 6vw;
 		color: var(--color-text);
 		font-weight: bold;
 		font-size: 1rem;
 		text-decoration: none;
 		scroll-behavior: smooth;
+	}
+	button.sidebar-btn {
+		all: unset;
+		& > img {
+			width: 2.5rem;
+			height: 2.5rem;
+		}
+		@media (orientation: landscape) and (aspect-ratio >= 1.55) {
+			display: none;
+		}
 	}
 	a:hover {
 		text-decoration: underline;

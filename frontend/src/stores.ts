@@ -7,3 +7,5 @@ export type Alert = {
 };
 
 export const alert = writable<Alert>();
+
+export const openSideBar = writable<boolean>(false);

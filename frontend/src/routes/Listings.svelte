@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { _ } from 'svelte-i18n';
 	import { onMount } from 'svelte';
 	import { PUBLIC_SERVER_URL } from '$env/static/public';
 	import { goto } from '$app/navigation';
@@ -28,11 +29,14 @@
 </script>
 
 <section id="listings">
-	<TitleBar title="My Listings" action={{ label: 'See all', onPress: () => goto('/listings/1') }} />
+	<TitleBar
+		title={$_('listings')}
+		action={{ label: $_('see_all_btn'), onPress: () => goto('/listings/1') }}
+	/>
 	{#if fetching}
-		<p>Loading</p>
+		<p>{$_('loading')}</p>
 	{:else if listings.length == 0}
-		<p>There are currently no listings to show. Please come back later.</p>
+		<p>{$_('no_listings')}</p>
 	{:else if error}
 		<p>{error}</p>
 	{:else}

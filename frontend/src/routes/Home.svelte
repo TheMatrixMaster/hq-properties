@@ -1,5 +1,6 @@
-<script>
+<script lang="ts">
 	import './styles.scss';
+	import { _ } from 'svelte-i18n';
 	import { goto } from '$app/navigation';
 	import ArrowRight from '$lib/images/arrow-right.svg';
 	import RLLogo from '$lib/images/royal-lepage.svg';
@@ -7,16 +8,15 @@
 
 <section id="intro" class="container-center">
 	<div class="left-col">
-		<h6>Welcome to</h6>
-		<h1>HQ Properties</h1>
+		<h6>{$_('welcome_msg')}</h6>
+		<h1>{$_('brand')}</h1>
 		<h6>Royal Lepage du Quartier</h6>
 	</div>
 	<div class="right-col">
-		<h6>#1 Real Estate Agent</h6>
-		<h2>West Island<br />Montreal & Laval</h2>
+		<h6>{$_('who_am_i')}</h6>
+		<h2>{$_('service_areas')}</h2>
 		<button class="secondary" on:click={() => goto('/reviews/1')}>
-			What recent<br />clients say
-			<!-- TODO add icon -->
+			{$_('review_btn')}
 			<img id="icon" alt="icon" src={ArrowRight} />
 		</button>
 	</div>
@@ -72,6 +72,7 @@
 	}
 	#intro h2 {
 		font-size: 2.3rem;
+		white-space: pre-line;
 		margin: 0;
 	}
 	#intro button {
@@ -79,6 +80,7 @@
 		margin-top: 2rem;
 		font-size: 1.4rem;
 		text-align: end;
+		white-space: pre-line;
 		& > img {
 			height: 1.8rem;
 		}
