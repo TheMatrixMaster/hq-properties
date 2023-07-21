@@ -1,4 +1,5 @@
 <script>
+	import SideBar from '$lib/components/SideBar.svelte';
 	import Header from './Header.svelte';
 	import Home from './Home.svelte';
 	import About from './About.svelte';
@@ -11,6 +12,7 @@
 
 <div class="use-bg-image" />
 <div class="main-content">
+	<SideBar />
 	<Header />
 	<Home />
 	<About />

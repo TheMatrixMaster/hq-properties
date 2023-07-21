@@ -1,5 +1,6 @@
 <script lang="ts">
 	import './styles.scss';
+	import { _ } from 'svelte-i18n';
 	import { onMount } from 'svelte';
 	import { PUBLIC_SERVER_URL } from '$env/static/public';
 	import { goto } from '$app/navigation';
@@ -29,11 +30,14 @@
 </script>
 
 <section id="media">
-	<TitleBar title="Posts" action={{ label: 'See all', onPress: () => goto('/posts/1') }} />
+	<TitleBar
+		title={$_('posts_title')}
+		action={{ label: $_('see_all_btn'), onPress: () => goto('/posts/1') }}
+	/>
 	{#if fetching}
-		<p>Loading</p>
+		<p>{$_('loading')}</p>
 	{:else if posts.length == 0}
-		<p>No posts have been written yet.</p>
+		<p>{$_('no_posts')}</p>
 	{:else if error}
 		<p>{error}</p>
 	{:else}

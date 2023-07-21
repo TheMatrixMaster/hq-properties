@@ -1,5 +1,6 @@
 <script>
 	import './styles.scss';
+	import { _ } from 'svelte-i18n';
 	import profile from '$lib/images/ma.jpeg';
 	import PhoneIcon from '$lib/images/phone.svg';
 	import EmailIcon from '$lib/images/email.svg';
@@ -12,15 +13,8 @@
 	<div class="right-col">
 		<div>
 			<h1>Hong Qu</h1>
-			<h2>Certified Real Estate Broker</h2>
-			<p>
-				Welcome to the world of real estate excellence with Hong Qu, your dedicated professional
-				broker at Royal Lepage. With a seamless transition from a successful 20-year ownership of a
-				uniform supply business, Hong's outstanding communication and negotiation abilities have
-				already garnered her remarkable success as an agent. A proud West Island resident for over
-				15 years, Hong combines her local expertise with a fresh approach to deliver exceptional
-				service for your next home transition.
-			</p>
+			<h2>{$_('official_title')}</h2>
+			<p>{$_('about_me')}</p>
 			<div class="links">
 				<div class="social-container">
 					<img alt="phone" src={PhoneIcon} />

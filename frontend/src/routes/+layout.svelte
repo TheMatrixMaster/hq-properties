@@ -1,11 +1,12 @@
-<script>
+<script lang="ts">
 	import './styles.scss';
+	import { _ } from 'svelte-i18n';
 	import Alert from '$lib/components/Alert.svelte';
 	import Footer from './Footer.svelte';
 </script>
 
 <svelte:head>
-	<title>HQ Properties</title>
+	<title>{$_('brand')}</title>
 </svelte:head>
 
 <div class="app">

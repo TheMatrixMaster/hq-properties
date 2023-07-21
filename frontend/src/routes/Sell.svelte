@@ -1,5 +1,6 @@
 <script lang="ts">
 	import './styles.scss';
+	import { _ } from 'svelte-i18n';
 	import { alert } from '../stores';
 	import { download, resetForm } from '../util';
 	import { PUBLIC_SERVER_URL } from '$env/static/public';
@@ -7,7 +8,7 @@
 	import SellImg from '$lib/images/sell.jpeg';
 	import TitleBar from '$lib/components/TitleBar.svelte';
 
-	const SUCCESS_MSG: string = "Thank you for downloading our seller's guide!";
+	const SUCCESS_MSG: string = $_('thx_download', { values: { user: "seller's" } });
 
 	const onSubmit = (e: any) => {
 		const formData = new FormData(e.target);
@@ -38,64 +39,57 @@
 </script>
 
 <section id="sell" class="buy-sell container-center">
-	<TitleBar title="Download our Seller's Guide" />
+	<TitleBar title={$_('seller_title')} />
 	<div class="left-col">
 		<img alt="sell-home" src={SellImg} />
-		<p>
-			As your dedicated real estate broker, I prioritize maximizing your sale price while minimizing
-			your effort. To achieve this, it is crucial to begin with a comprehensive understanding of
-			your neighborhood's real estate market. By assessing your home's unique position within the
-			market, I can provide valuable insights and guidance. I encourage you to involve me early in
-			the process and share your goals, allowing us to collaborate and develop a winning strategy
-			tailored to your specific needs.
-		</p>
+		<p>{$_('seller_readme')}</p>
 	</div>
 	<div class="right-col">
 		<form on:submit|preventDefault={onSubmit} id="sell-form">
 			<label class="half">
-				First name
+				{$_('first_name')}
 				<input required id="first_name" name="first_name" type="text" placeholder="John" />
 			</label>
 			<label class="half">
-				Last name
+				{$_('last_name')}
 				<input required id="last_name" name="last_name" type="text" placeholder="Smith" />
 			</label>
 			<label class="half">
-				Email
+				{$_('email')}
 				<input required id="email" name="email" type="email" placeholder="john.smith@email.com" />
 			</label>
 			<label class="half">
-				Phone
+				{$_('phone')}
 				<input required id="phone" name="phone" type="tel" />
 			</label>
 			<label class="full">
-				Home Address
+				{$_('home_address')}
 				<input required id="address" name="address" type="text" autocomplete="street-address" />
 			</label>
 			<label class="half">
-				Postal Code (Optional)
+				{$_('postal_code')} ({$_('optional')})
 				<input id="postal_code" name="postal_code" type="text" autocomplete="postal-code" />
 			</label>
 			<label class="half">
-				City
+				{$_('city')}
 				<input required id="city" name="city" type="text" autocomplete="address-level2" />
 			</label>
 			<div class="full">
-				<label for="sell_period">When are you planning to sell?</label>
+				<label for="sell_period">{$_('when_to_sell')}</label>
 				<select required id="sell_period" name="sell_period" value={undefined}>
-					<option value="Immediately">Immediately</option>
-					<option value="Next month">Next Month</option>
-					<option value="Within the next three months"> Within the next three months </option>
-					<option value="Within the next six months"> Within the next six months </option>
-					<option value="Next year">Next year</option>
-					<option value="Undecided">Undecided</option>
+					<option value="Immediately">{$_('when_immediately')}</option>
+					<option value="Next month">{$_('when_next_month')}</option>
+					<option value="Within the next three months">{$_('when_within_3')}</option>
+					<option value="Within the next six months">{$_('when_within_6')}</option>
+					<option value="Next year">{$_('when_next_year')}</option>
+					<option value="Undecided">{$_('undecided')}</option>
 				</select>
 			</div>
 			<label class="full">
-				Anything else we should know?
+				{$_('anything_else')}
 				<textarea id="other" name="other" rows="2" />
 			</label>
-			<button class="primary" type="submit">Send</button>
+			<button class="primary" type="submit">{$_('send_btn')}</button>
 		</form>
 	</div>
 </section>

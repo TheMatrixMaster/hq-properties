@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { _ } from 'svelte-i18n';
 	import BedIcon from '$lib/images/bed.svg';
 	import BathIcon from '$lib/images/bath.svg';
 	import { dummy_listings } from '$lib/dummy';
@@ -11,9 +12,15 @@
 	$: marketStatus = (() => {
 		switch (data.listing.market_st) {
 			case 'Sold':
-				return 'Sold';
+				return $_('sold');
+			case 'Expired':
+				return $_('expired');
+			case 'Rent':
+				return $_('for_rent');
+			case 'Sale':
+				return $_('for_sale');
 			default:
-				return `for ${data.listing.market_st}`;
+				return 'Listed';
 		}
 	})();
 </script>
@@ -35,7 +42,7 @@
 						<h2>{data.listing.bedrooms}</h2>
 						<img alt="bed-icon" src={BedIcon} />
 					</div>
-					<p>Bedrooms</p>
+					<p>{$_('bedrooms')}</p>
 				</div>
 			{/if}
 			{#if data.listing.bathrooms >= 0}
@@ -44,14 +51,14 @@
 						<h2>{data.listing.bathrooms}</h2>
 						<img alt="bath-icon" src={BathIcon} />
 					</div>
-					<p>Bathrooms</p>
+					<p>{$_('bathrooms')}</p>
 				</div>
 			{/if}
 			<div class="spec">
 				<div>
 					<h2>{data.listing.area}</h2>
 				</div>
-				<p>SQ. FT.</p>
+				<p>{$_('square_ft')}</p>
 			</div>
 		</div>
 		<h2>{formattedPrice}</h2>
@@ -166,5 +173,8 @@
 	}
 	div.rent {
 		background: var(--color-theme-1);
+	}
+	div.expired {
+		background: var(--color-bg-2);
 	}
 </style>

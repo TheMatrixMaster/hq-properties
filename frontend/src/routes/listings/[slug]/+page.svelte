@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { _ } from 'svelte-i18n';
 	import { goto } from '$app/navigation';
 	import Header from '../../Header.svelte';
 	import TitleBar from '$lib/components/TitleBar.svelte';
@@ -14,21 +15,21 @@
 </script>
 
 <svelte:head>
-	<title>Listings</title>
+	<title>{$_('listings')}</title>
 	<meta name="listings" content="All my listings" />
 </svelte:head>
 
 <Header isTransparent={false} />
 <section>
-	<TitleBar title="My Listings" />
+	<TitleBar title={$_('listings')} />
 	<div class="filter-container" />
 	<div class="card-container">
 		{#if data.fetching}
-			<p>Loading</p>
+			<p>{$_('loading')}</p>
 		{:else if data.error}
 			<p>{data.error}</p>
 		{:else if data.listings.length === 0}
-			<p>It's a little empty in here. Why don't you change the filters or try again later!</p>
+			<p>{$_('no_listings_list')}</p>
 		{:else}
 			{#each data.listings as listing}
 				<ListingCard data={listing} mode="list" />
