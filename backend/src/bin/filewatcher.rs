@@ -3,7 +3,7 @@ use backend_api::listings::{NewListing, MarketStatus, NewListingImage};
 use notify::{RecommendedWatcher, RecursiveMode, Watcher, Config};
 
 use chrono::NaiveDateTime;
-use rocket::serde::{Deserialize};
+use rocket::serde::Deserialize;
 use std::path::{Path, PathBuf};
 use std::{ffi::OsStr, process::Command};
 use std::{thread, time::Duration};
@@ -179,9 +179,22 @@ fn parse_listings(data: &mut Vec<u8>) -> Result<(), FileWatcherError> {
             .or_else(|| parse_f64(r.get(75)))
             .log_err("Failed on parse area")?;
 
-        let price = parse_i32(r.get(6)).log_err("Failed on parse price")?;
+        let price = parse_i32(r.get(6))
+            .or_else(|| parse_i32(r.get(9)))
+            .log_err("Failed on parse price")?;
+
         let market_st = parse_market_st(parse_str(r.get(115)))
+            .and_then(|ms| {
+                match ms {
+                    MarketStatus::Sale => {
+                        parse_str(r.get(114))
+                            .map_or(Some(ms), |_| Some(MarketStatus::Rent))
+                    },
+                    _ => Some(ms),
+                }
+            })
             .log_err("Failed on parse market status")?;
+
         let updated_at = parse_datetime(parse_str(r.get(113)))
             .log_err("Failed on parse datetime")?;
 
