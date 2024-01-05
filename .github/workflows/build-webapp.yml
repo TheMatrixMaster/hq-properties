@@ -22,10 +22,14 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Create .env file
+        shell: bash
         working-directory: frontend
+        env:
+          PUBLIC_ANALYTICS_ID: ${{ secrets.PUBLIC_ANALYTICS_ID }}
         run: |
           touch .env
           echo PUBLIC_SERVER_URL="https://api.hqproperties.ca" >> .env
+          echo PUBLIC_ANALYTICS_ID="$PUBLIC_ANALYTICS_ID" >> .env
           cat .env
 
       - name: Build and push webapp image

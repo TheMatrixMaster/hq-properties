@@ -3,10 +3,21 @@
 	import { _ } from 'svelte-i18n';
 	import Alert from '$lib/components/Alert.svelte';
 	import Footer from './Footer.svelte';
+	import { PUBLIC_ANALYTICS_ID } from '$env/static/public';
 </script>
 
 <svelte:head>
 	<title>{$_('brand')}</title>
+
+	<script async src={`https://www.googletagmanager.com/gtag/js?id=${PUBLIC_ANALYTICS_ID}`}></script>
+	<script lang="ts">
+		window.dataLayer = window.dataLayer || [];
+		function gtag() {
+			dataLayer.push(arguments);
+		}
+		gtag('js', new Date());
+		gtag('config', PUBLIC_ANALYTICS_ID);
+	</script>
 </svelte:head>
 
 <div class="app">
