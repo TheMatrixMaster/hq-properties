@@ -31,6 +31,7 @@ jobs:
         run: |
           touch .env
           echo PUBLIC_SERVER_URL="https://api.hqproperties.ca" >> .env
+          echo PUBLIC_ANALYTICS_ID="UA-XXXXX-X" >> .env
           cat .env
 
       - name: Create dummy nginx key and cert
