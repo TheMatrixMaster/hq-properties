@@ -268,9 +268,9 @@ pub async fn get_all(
         .map(|v| MarketStatus::from_str(&v))
         .transpose()
         .map_err(|e| {
-            StatusErr::BadRequest(BadRequest(Some(Json(ApiError {
+            StatusErr::BadRequest(BadRequest(Json(ApiError {
                 details:e.to_string(),
-            }))))
+            })))
         })?;
 
     let (ls, size) = Listing::get_all(limit, offset, m, &conn)
