@@ -10,14 +10,16 @@
 	<title>{$_('brand')}</title>
 
 	<script async src={`https://www.googletagmanager.com/gtag/js?id=${PUBLIC_ANALYTICS_ID}`}></script>
-	<script lang="ts">
+
+	{@html `<script lang="ts">	// eslint-disable-line
 		window.dataLayer = window.dataLayer || [];
 		function gtag() {
-			dataLayer.push(arguments);
+			dataLayer.push(arguments)	// eslint-disable-line
 		}
+
 		gtag('js', new Date());
-		gtag('config', PUBLIC_ANALYTICS_ID);
-	</script>
+		gtag('config', "${PUBLIC_ANALYTICS_ID}");
+	</script>`}
 </svelte:head>
 
 <div class="app">
