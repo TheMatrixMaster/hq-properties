@@ -33,6 +33,7 @@ services:
       ROCKET_ADDRESS: 0.0.0.0
     secrets:
       - POSTGRES_PASSWORD
+      - GEOCODE_API_KEY
     volumes:
       - .watchdir:/home/.watchdir
 
@@ -65,3 +66,5 @@ volumes:
 secrets:
   POSTGRES_PASSWORD:
     file: ./secrets/POSTGRES_PASSWORD
+  GEOCODE_API_KEY:
+    file: ./secrets/GEOCODE_API_KEY
