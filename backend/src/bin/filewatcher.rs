@@ -1,4 +1,4 @@
-use std::env;
+use std::fs;
 use backend_api::*;
 use backend_api::listings::{NewListing, MarketStatus, NewListingImage};
 use notify::{RecommendedWatcher, RecursiveMode, Watcher, Config};
@@ -87,9 +87,9 @@ pub fn parse_datetime(string: Option<String>) -> Option<NaiveDateTime> {
 }
 
 pub fn geocode_city_from_coords(lat: f64, long: f64) -> Result<String, Box<dyn std::error::Error>> {
-    let geocode_api_key = match env::var("GEOCODE_API_KEY") {
+    let geocode_api_key = match fs::read_to_string("/run/secrets/GEOCODE_API_KEY") {
         Ok(v) => v,
-        Err(e) => { println!("{e}"); Result::Err(e.to_string()) }?
+        Err(e) => { println!("{e}"); Err(e.to_string()) }?
     };
 
     let url = format!("https://geocode.maps.co/reverse?lat={lat}&lon={long}&api_key={geocode_api_key}");
@@ -257,7 +257,7 @@ fn parse_listings(data: &mut Vec<u8>) -> Result<(), FileWatcherError> {
  */
 fn handle_new_validated_file(main_path: &PathBuf) {
     println!("We first sleep thread for 1 minute to ensure ftp has completed.");
-    thread::sleep(Duration::from_secs(1));
+    thread::sleep(Duration::from_secs(60));
     
     let mut did_fail: bool = false;
     let mut data: HashMap<&str, Vec<u8>> = HashMap::new();
