@@ -4,7 +4,7 @@ ENV NODE_ENV development
 ENV USE_POLLING false
 ENV CHOKIDAR_USEPOLLING ${USE_POLLING}
 
-RUN npm install -g pnpm
+RUN npm install -g pnpm@8
 
 WORKDIR /app
 
