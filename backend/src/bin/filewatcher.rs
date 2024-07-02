@@ -91,7 +91,7 @@ pub fn geocode_city_from_coords(lat: f64, long: f64) -> Result<String, Box<dyn s
         Ok(v) => v,
         Err(e) => { println!("{e}"); Err(e.to_string()) }?
     };
-
+    
     let url = format!("https://geocode.maps.co/reverse?lat={lat}&lon={long}&api_key={geocode_api_key}");
     let resp = 
         reqwest::blocking::get(url)?
